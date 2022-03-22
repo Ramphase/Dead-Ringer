@@ -63,7 +63,28 @@ app.post('/api/login', async (req, res, next) =>
 
 });
 
+app.post('/api/register', async (req, res, next) => 
+{
+  // Incoming firstName, lastName, email, login, password
+  // Outgoing: success or error message
+  
+  const { firstName, lastName, email, login, password} = req.body;
+  const newUser = {FirstName:firstName, LastName:lastName, Email:email, Login:login, Password:password};
+  var error = '';
+  
+  try
+  {
+    const db = client.db();
+    const result = db.collection('Users').insertOne(newUser);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
 
+  var ret = { error: error };
+  res.status(200).json(ret);
+});
 
 app.listen(PORT, () => 
 {
