@@ -86,6 +86,27 @@ app.post('/api/register', async (req, res, next) =>
   res.status(200).json(ret);
 });
 
+app.post('/api/addTrigger', async (req, res, next) =>
+{
+  // incoming: userId, message, contact
+  // outgoing: success or error message
+  const { userId, message, contact } = req.body;
+  const newTrigger = {UserId:userId, Msg:message, Contact:contact};
+  var error = '';
+  try
+  {
+    const db = client.db();
+    const result = db.collection('Triggers').insertOne(newTrigger);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+  
+  var ret = { error: error };
+  res.status(200).json(ret);
+});
+
 app.listen(PORT, () => 
 {
   console.log('Server listening on port ' + PORT);
