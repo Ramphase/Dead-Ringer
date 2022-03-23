@@ -69,9 +69,4 @@ app.post('/api/addTrigger', async (req, res, next) =>
   var ret = { error: error };
   res.status(200).json(ret);
 });
-
-app.listen(PORT, () => 
-{
-  console.log('Server listening on port ' + PORT);
-});
 }
