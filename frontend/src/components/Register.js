@@ -1,5 +1,6 @@
 import React,{ useState } from "react";
 import {Link} from 'react-router-dom';
+import { isExpired, decodeToken } from "react-jwt";
 
 export function Register() {
     
@@ -57,7 +58,7 @@ export function Register() {
 
         try
         {            
-            const response = await fetch(bp.buildPath('/api/register'),
+            const response = await fetch(bp.buildPath('api/register'),
                 {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 
             var res = JSON.parse(await response.text());
@@ -68,7 +69,10 @@ export function Register() {
                 return;
             }
             
-            var user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
+            var storage = require('../tokenStorage.js');
+            storage.storeToken(res);
+            const tokenData = decodeToken(storage.retrieveToken());
+            var user = {firstName:tokenData.firstName,lastName:tokenData.lastName,id:tokenData.userId}
             localStorage.setItem('user_data', JSON.stringify(user));
 
             setMessage('Account Created');

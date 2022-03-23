@@ -1,5 +1,6 @@
 import React,{ useState } from 'react';
 import {Link} from 'react-router-dom';
+import { isExpired, decodeToken } from "react-jwt";
 
 export function Login(){
    
@@ -13,26 +14,30 @@ export function Login(){
         var obj = {login:loginName.value,password:loginPassword.value};
         var js = JSON.stringify(obj);
         var bp = require('./Path.js');
+        var storage = require('../tokenStorage.js');
 
         try
         {            
-            const response = await fetch(bp.buildPath('/api/login'),
+            const response = await fetch(bp.buildPath('api/login'),
                 {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 
             var res = JSON.parse(await response.text());
+            storage.storeToken(res);
 
-            if( res.id <= 0 )
+            const tokenData = decodeToken(storage.retrieveToken());
+            
+            if( tokenData.userId <= 0)
             {
-                setMessage('User/Password combination incorrect');
+                setMessage(res.error);
+                return;
             }
-            else
-            {
-                var user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
-                localStorage.setItem('user_data', JSON.stringify(user));
 
-                setMessage('');
-                window.location.href = '/';
-            }
+            var user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
+            localStorage.setItem('user_data', JSON.stringify(user));
+
+            setMessage('');
+            window.location.href = '/';
+            
         }
         catch(e)
         {
