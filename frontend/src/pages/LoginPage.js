@@ -3,13 +3,13 @@ import Login from '../components/Login';
 
 function LoginPage() {
     return (
-        <body>
+        <header>
   
         <h2>Dead-Ringer</h2>
   
         <Login/>
   
-      </body>
+      </header>
       
     );
   }

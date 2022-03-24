@@ -8,8 +8,8 @@ export function Login(){
     var loginPassword;
     const [message, setMessage] = useState('');
 
-    const doLogin = async (e) => {
-        e.preventDefault();
+    const doLogin = async event => {
+        event.preventDefault();
 
         var obj = {login:loginName.value,password:loginPassword.value};
         var js = JSON.stringify(obj);
@@ -18,7 +18,7 @@ export function Login(){
 
         try
         {            
-            const response = await fetch(bp.buildPath("api/login"),
+            const response = await fetch(bp.buildPath('login'),
                 {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 
             var res = JSON.parse(await response.text());
@@ -41,7 +41,7 @@ export function Login(){
         }
         catch(e)
         {
-            alert(e.toString());
+            console.log(e.toString());
             return;
         }    
     }

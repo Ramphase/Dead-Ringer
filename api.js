@@ -3,7 +3,7 @@ require('mongodb');
 
 exports.setApp = function ( app, client )
 {
-    app.post('/api/login', async (req, res, next) => 
+    app.post('/login', async (req, res, next) => 
 {
   // Incoming: login, password
   // Outgoing: userId, firstName, lastName, error
@@ -45,7 +45,7 @@ exports.setApp = function ( app, client )
 
 });
 
-app.post('/api/register', async (req, res, next) => 
+app.post('/register', async (req, res, next) => 
 {
   // Incoming firstName, lastName, email, login, password
   // Outgoing: success or error message
@@ -92,7 +92,7 @@ app.post('/api/register', async (req, res, next) =>
     res.status(200).json(ret);
 });
 
-app.post('/api/addTrigger', async (req, res, next) =>
+app.post('/addTrigger', async (req, res, next) =>
 {
   // incoming: userId, message, contact
   // outgoing: success or error message

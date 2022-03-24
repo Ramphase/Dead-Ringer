@@ -17,8 +17,8 @@ export function Register() {
         '(.+)@((.+){2,})((.+){2,})'
     );
 
-    const doRegister = async (e) => {
-        e.preventDefault();
+    const doRegister = async event => {
+        event.preventDefault();
 
         var obj = 
         {
@@ -59,7 +59,7 @@ export function Register() {
 
         try
         {            
-            const response = await fetch(bp.buildPath("api/register"),
+            const response = await fetch(bp.buildPath('register'),
                 {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 
             var res = JSON.parse(await response.text());
@@ -82,7 +82,7 @@ export function Register() {
         }
         catch(e)
         {
-            alert(e.toString());
+            console.log(e.toString());
             return;
         }    
     }

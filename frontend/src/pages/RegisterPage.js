@@ -3,13 +3,13 @@ import Register from '../components/Register';
 
 function RegisterPage() {
     return (
-        <body>
+        <header>
   
         <h2>Dead-Ringer</h2>
   
         <Register/>
   
-      </body>
+      </header>
       
     );
   }
