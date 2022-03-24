@@ -26,7 +26,8 @@ export function Register() {
             lastName: lastName.value,
             email: registerEmail.value,
             login:registerLogin.value,
-            password:registerPassword.value
+            password:registerPassword.value,
+            confirmPassword:confirmPassword.value
         };
 
         for(const [key, value] of Object.entries(obj)) 
