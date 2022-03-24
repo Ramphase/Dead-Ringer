@@ -8,6 +8,7 @@ exports.setApp = function ( app, client )
   // Incoming: login, password
   // Outgoing: userId, firstName, lastName, error
   var error = '';
+  var ret;
   const { login, password } = req.body;
   const db = client.db();
   const results = await db.collection('Users').find({Login:login,Password:password}).toArray();
@@ -20,9 +21,27 @@ exports.setApp = function ( app, client )
     userId = results[0].UserId;
     firstName = results[0].FirstName;
     lastName = results[0].LastName;
+
+    try
+    {
+      const token = require("./createJWT.js");
+      ret = token.createToken( firstName, lastName, userId );
+    }
+    catch(e)
+    {
+        
+        ret = {error:e.message};
+    }
   }
-  var ret = {userId: userId, firstName: firstName, lastName: lastName, error:''};
-  res.status(200).json(ret);
+  else
+  {
+    const token = require("./createJWT.js");
+    error = 'Login/Password incorrect';
+    ret = token.createToken( firstName, lastName, userId );
+  }
+
+  ret = Object.assign(ret, {error:error})
+  res.status(200).json( ret );
 
 });
 
@@ -35,18 +54,42 @@ app.post('/api/register', async (req, res, next) =>
   const newUser = {FirstName:firstName, LastName:lastName, Email:email, Login:login, Password:password};
   var error = '';
   
-  try
-  {
-    const db = client.db();
-    const result = db.collection('Users').insertOne(newUser);
-  }
-  catch(e)
-  {
-    error = e.toString();
-  }
+  const db = client.db();
 
-  var ret = { error: error };
-  res.status(200).json(ret);
+    const results = await db.collection('Users').find({Login:login}).toArray();
+
+    if (results.length != 0)
+    {
+        error = "Username already exists";
+        var ret = { error: error };
+        res.status(200).json(ret);
+
+        return;
+    }
+
+    try
+    {
+        const result = await db.collection('Users').insertOne(newUser);
+    }
+    catch(e)
+    {
+        error = e.toString();
+    }
+
+    try
+    {
+        const retNewUser = await db.collection('Users').find({Login:login}).toArray();
+        console.log(retNewUser);
+        const token = require("./createJWT.js");
+        retToken = token.createToken( retNewUser[0].FirstName, retNewUser[0].LastName, retNewUser[0].userId );
+    }
+    catch(e)
+    {
+        error = e.toString();
+    }
+
+    ret = Object.assign(retToken, {error:error})
+    res.status(200).json(ret);
 });
 
 app.post('/api/addTrigger', async (req, res, next) =>

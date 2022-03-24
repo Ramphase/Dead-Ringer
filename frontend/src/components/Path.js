@@ -1,4 +1,5 @@
 const app_name = 'dead-ringer'
+exports.buildPath = 
 function buildPath(route)
 {
     if (process.env.NODE_ENV === 'production') 

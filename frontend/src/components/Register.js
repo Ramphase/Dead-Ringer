@@ -1,6 +1,6 @@
 import React,{ useState } from "react";
 import {Link} from 'react-router-dom';
-import { isExpired, decodeToken } from "react-jwt";
+import { decodeToken } from "react-jwt";
 
 export function Register() {
     
@@ -58,7 +58,7 @@ export function Register() {
 
         try
         {            
-            const response = await fetch(bp.buildPath('api/register'),
+            const response = await fetch(bp.buildPath("api/register"),
                 {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 
             var res = JSON.parse(await response.text());
@@ -76,7 +76,7 @@ export function Register() {
             localStorage.setItem('user_data', JSON.stringify(user));
 
             setMessage('Account Created');
-            window.location.href = '/';
+            window.location.href = '/Login';
 
         }
         catch(e)
@@ -100,6 +100,8 @@ export function Register() {
                     <input type="text" id="email" placeholder="Email" className="mb-3" ref={(c) => registerEmail = c}/>
                     <input type="password" id="password" placeholder="Password" className="mb-3" ref={(c) => registerPassword = c}/>
                     <input type="password" id="confirm_pwd" placeholder="Confirm password" ref={(c) => confirmPassword = c}/>
+
+                    <span id="registerResult">{message}</span>
 
                     <button className="mt-3" onSubmit={doRegister}>Sign Up</button>
                 </form>

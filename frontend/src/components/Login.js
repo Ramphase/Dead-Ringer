@@ -1,6 +1,6 @@
 import React,{ useState } from 'react';
 import {Link} from 'react-router-dom';
-import { isExpired, decodeToken } from "react-jwt";
+import { decodeToken } from "react-jwt";
 
 export function Login(){
    
@@ -18,7 +18,7 @@ export function Login(){
 
         try
         {            
-            const response = await fetch(bp.buildPath('api/login'),
+            const response = await fetch(bp.buildPath("api/login"),
                 {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 
             var res = JSON.parse(await response.text());
@@ -36,7 +36,7 @@ export function Login(){
             localStorage.setItem('user_data', JSON.stringify(user));
 
             setMessage('');
-            window.location.href = '/';
+            window.location.href = '/Login';
             
         }
         catch(e)
@@ -52,6 +52,8 @@ export function Login(){
                    <form onSubmit={doLogin}>
                     <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} className="mb-3"/> 
                     <input type="password" id="password" placeholder="Password" ref={(c) => loginPassword = c} />
+                    <span id="loginResult">{message}</span>
+
                     <button className="mt-3" onSubmit={doLogin}>Sign In</button>
                    </form>
                     <p>
@@ -65,7 +67,6 @@ export function Login(){
                         </span>
                             </Link>
                         </span>
-                        <span id="loginResult">{message}</span>
                     </p>
                 </section>
             )}
