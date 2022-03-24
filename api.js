@@ -35,12 +35,9 @@ exports.setApp = function ( app, client )
   }
   else
   {
-    const token = require("./createJWT.js");
     error = 'Login/Password incorrect';
-    ret = token.createToken( firstName, lastName, userId );
   }
-
-  ret = Object.assign(ret, {error:error})
+        
   res.status(200).json( ret );
 
 });
