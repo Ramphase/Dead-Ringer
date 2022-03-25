@@ -3,7 +3,7 @@ import Navbar from '../components/navbar'
 import './Global.css'
 const NotificationSettings = () => {
 return (
-	<div>
+	<div class="bG">
 		<Navbar/>
 	<h1>Notification Settings</h1>
 	</div>

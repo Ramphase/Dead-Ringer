@@ -3,7 +3,7 @@ import Navbar from '../components/navbar'
 import './Global.css'
 const TriggerSettings = () => {
 return (
-	<div>
+	<div class="bG">
 		<Navbar/>
 	<h1>Trigger Settings</h1>
 	</div>

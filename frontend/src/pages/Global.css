@@ -1,8 +1,11 @@
 * {
-  color: white;
   font-family: "Nunito", sans-serif;
 }
 
-body {
+text {
+  color: white;
+}
+
+div.bG {
   background: #fc2a02;
 }

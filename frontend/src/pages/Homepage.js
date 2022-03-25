@@ -4,7 +4,7 @@ import './Global.css'
 const Homepage = () =>
 {
   return(
-    <div>
+    <div class="bG">
       <Navbar/>
       <h1>Homepage is under construction</h1>
     </div>

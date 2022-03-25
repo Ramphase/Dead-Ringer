@@ -4,7 +4,7 @@ import Navbar from '../components/navbar'
 import './Global.css'
 const Switches = () => {
 return (
-	 <div>
+	 <div class="bG">
 		 <Navbar/>
             <h1>Switches</h1>
             <p class = "sDesc">Create and customize your dead man switches by using the option buttons below. You can quickly activate and deactivate them here too. </p>
