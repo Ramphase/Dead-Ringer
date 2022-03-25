@@ -29,7 +29,7 @@ h3.gStart {
   top: 770px;
 }
 
-button {
+button.switch {
   display: center;
   flex-direction: row;
   align-items: center;

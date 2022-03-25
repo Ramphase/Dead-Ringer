@@ -10,7 +10,7 @@ return (
             <p class = "sDesc">Create and customize your dead man switches by using the option buttons below. You can quickly activate and deactivate them here too. </p>
             <h3 class = "noSwitches">You currently have no switches set up.</h3>
             <h3 class = "gStart">Get Started</h3>
-            <button type="button" onclick="../pages/switches">Create New Switch</button>
+            <button class="switch" type="button" onclick="../pages/switches">Create New Switch</button>
         </div> 
 );
 };
