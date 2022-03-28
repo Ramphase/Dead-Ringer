@@ -1,37 +1,51 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import Homepage from './pages/Homepage';
-import Messages from "./pages/Messages"
-import NotificationSettings from "./pages/NotificationSettings"
-import Switches from "./pages/Switches"
-import TriggerSettings from "./pages/TriggerSettings"
+import MessagesPage from "./pages/MessagesPage";
+import NotificationSettingsPage from "./pages/NotificationSettingsPage";
+import SwitchesPage from "./pages/SwitchesPage";
+import TriggerSettingsPage from "./pages/TriggerSettingsPage";
 
 function App() {
 
   return (
     <Router >
-      <style>
-          @import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
-      </style>
-            <Switch>
-                <Route path="/Login" exact>
-                    <LoginPage />
-                </Route>
-                <Route path="/Register" exact>
-                    <RegisterPage />
-                </Route>
-                <Redirect to="/Login" />
-                <Route path='/' exact component={Homepage} /> 
-                <Route path='/Switches' exact component={Switches} />
-                <Route path='/TriggerSettings' component={TriggerSettings} />
-                <Route path='/Messages' component={Messages} />
-                <Route path='/NotificationSettings' component={NotificationSettings} />
-            </Switch>  
 
-         
-        </Router>
+        <Switch>
+            <Route path="/" exact>
+                <LoginPage />
+            </Route>
+
+            <Route path="/Register" exact>
+                <RegisterPage />
+            </Route>
+
+            <Route path="/Homepage" exact>
+              <Homepage />
+            </Route>
+
+            <Route path="/Switches" exact>
+              <SwitchesPage />
+            </Route>
+
+            <Route path="/TriggerSettings" exact>
+              <TriggerSettingsPage />
+            </Route>
+
+            <Route path="/Messages" exact>
+              <MessagesPage />
+            </Route>
+
+            <Route path="/NotificationSettings" exact>
+              <NotificationSettingsPage />
+            </Route>
+
+            <Redirect to="/" />
+        </Switch>  
+
+    </Router>
   );
 }
 

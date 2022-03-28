@@ -20,7 +20,7 @@ body {
   --color-success: #4bb544;
   --border-radius: 4px;
 
-  background-image: url("./components/images/deadmanpic.jpg");
+  background-image: url("./components/images/bg.jpg");
   margin: 0;
   height: 100vh;
   display: flex;
@@ -43,14 +43,23 @@ body {
 }
 
 section {
-  width: 350px;
-  min-height: 400px;
+  width: 440px;
+  min-height: 350px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   padding: 1rem;
   background-color: #ffffff;
   border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.324);
+}
+
+.small-title{
+  font-family: "Nunito", sans-serif;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  padding: 5px;
 }
 
 form {
