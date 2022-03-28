@@ -1,9 +1,12 @@
-import React,{ useState } from "react";
+import React,{ useState } from 'react';
 import {Link} from 'react-router-dom';
-import { decodeToken } from "react-jwt";
+import axios from 'axios';
 
 export function Register() {
-    
+
+    var bp = require('./Path.js');
+    var storage = require('../tokenStorage.js');
+
     const [message, setMessage] = useState('');
 
     var registerLogin;
@@ -53,44 +56,53 @@ export function Register() {
         }
         
         delete obj.confirmPassword;
-
         var js = JSON.stringify(obj);
-        var bp = require('./Path.js');
 
-        try
-        {            
-            const response = await fetch(bp.buildPath('register'),
-                {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
-
-            var res = JSON.parse(await response.text());
-            
-            if(res.error !== '')
+        var config = 
+        {
+            method: 'post',
+            url: bp.buildPath('register'),
+            headers: 
+            {
+                'Content-Type': 'application/json'
+            },
+            data: js
+        };
+        axios(config)
+            .then(function (response) 
+        {
+            var res = response.data;
+            if (res.error !== '') 
             {
                 setMessage(res.error);
                 return;
             }
-            
-            var storage = require('../tokenStorage.js');
-            storage.storeToken(res);
-            const tokenData = decodeToken(storage.retrieveToken());
-            var user = {firstName:tokenData.firstName,lastName:tokenData.lastName,id:tokenData.userId}
-            localStorage.setItem('user_data', JSON.stringify(user));
+            else 
+            {
+                storage.storeToken(res);
+                var jwt = require('jsonwebtoken');
 
-            setMessage('Account Created');
-            window.location.href = '/Login';
+                var ud = jwt.decode(storage.retrieveToken(),{complete:true});
+                var userId = ud.payload.userId;
+                var firstName = ud.payload.firstName;
+                var lastName = ud.payload.lastName;
+                    
+                var user = {firstName:firstName,lastName:lastName,id:userId}
+                localStorage.setItem('user_data', JSON.stringify(user));
+                setMessage('Account Created');
+                window.location.href = '/Login';
+            }
 
-        }
-        catch(e)
+        })
+        .catch(function (error) 
         {
-            console.log(e.toString());
-            return;
-        }    
+            console.log(error);
+        });  
     }
 
     return (
-
           <section >
-            <h2 className="mb-3">Register</h2>
+            <h2 class="small-title">Dead Ringer</h2>
                 <form onSubmit={doRegister}>
                     <div className="side-by-side">
                         <input type="text" id="firstName" placeholder="First Name" className="mb-3" ref={(c) => firstName = c}/>
@@ -115,15 +127,13 @@ export function Register() {
                         </span>
                        
                         <span span style={{color :'#4e4187', fontSize: 15}}>
-                             Sign in
+                            &nbsp; Sign in
                          </span>
                         </Link>
                     </span>
                 </p>
                      
                 </section>
-            )}
-    
-
+    )}
 
 export default Register

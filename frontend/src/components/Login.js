@@ -1,9 +1,12 @@
 import React,{ useState } from 'react';
 import {Link} from 'react-router-dom';
-import { decodeToken } from "react-jwt";
+import axios from 'axios';
 
 export function Login(){
    
+    var bp = require('./Path.js');
+    var storage = require('../tokenStorage.js');
+
     var loginName;
     var loginPassword;
     const [message, setMessage] = useState('');
@@ -13,63 +16,71 @@ export function Login(){
 
         var obj = {login:loginName.value,password:loginPassword.value};
         var js = JSON.stringify(obj);
-        var bp = require('./Path.js');
-        var storage = require('../tokenStorage.js');
-
-        try
-        {            
-            const response = await fetch(bp.buildPath('login'),
-                {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
-
-            var res = JSON.parse(await response.text());
-            storage.storeToken(res);
-
-            const tokenData = decodeToken(storage.retrieveToken());
-            
-            if( tokenData.userId <= 0)
+        var config = 
+        {
+            method: 'post',
+            url: bp.buildPath('login'),
+            headers: 
             {
-                setMessage(res.error);
-                return;
+                'Content-Type': 'application/json'
+            },
+            data: js
+        };
+        axios(config)
+            .then(function (response) 
+        {
+            var res = response.data;
+            if (res.error) 
+            {
+                setMessage('User/Password combination incorrect');
+            }
+            else 
+            {
+                storage.storeToken(res);
+                var jwt = require('jsonwebtoken');
+
+                var ud = jwt.decode(storage.retrieveToken(),{complete:true});
+                var userId = ud.payload.userId;
+                var firstName = ud.payload.firstName;
+                var lastName = ud.payload.lastName;
+                    
+                var user = {firstName:firstName,lastName:lastName,id:userId}
+                localStorage.setItem('user_data', JSON.stringify(user));
+                window.location.href = '/';
             }
 
-            var user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
-            localStorage.setItem('user_data', JSON.stringify(user));
-
-            setMessage('');
-            window.location.href = '/Login';
-            
-        }
-        catch(e)
+        })
+        .catch(function (error) 
         {
-            console.log(e.toString());
-            return;
-        }    
+            console.log(error);
+        }); 
     }
-
     return (
-            <section>
-               <h2 className="mb-5">Login</h2>
-                   <form onSubmit={doLogin}>
-                    <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} className="mb-3"/> 
-                    <input type="password" id="password" placeholder="Password" ref={(c) => loginPassword = c} />
-                    <span id="loginResult">{message}</span>
+        <section>
+            <h2 class="small-title">Dead Ringer</h2>
 
-                    <button className="mt-3" onSubmit={doLogin}>Sign In</button>
-                   </form>
-                    <p>
-                        <span className="link text-center">
-                            <Link to="/Register" variant = "body2">
-                        <span style={{color :"black", fontSize: 15}}>
-                             Don't have an account?
-                        </span>    
-                        <span span style={{color :'#4e4187', fontSize: 15}}>
-                             Sign up
-                        </span>
-                            </Link>
-                        </span>
-                    </p>
-                </section>
-            )}
+            <form onSubmit={doLogin}>
+                <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} className="mb-3"/> 
+                <input type="password" id="password" placeholder="Password" ref={(c) => loginPassword = c} />
+                <span id="loginResult">{message}</span>
 
+                <button className="mt-3" onSubmit={doLogin}>Sign In</button>
+            </form>
 
-export default Login
+                <p>
+                    <span className="link text-center">
+                    <Link to="/Register" variant = "body2">
+                    <span style={{color :"black", fontSize: 15}}>
+                        Don't have an account?
+                    </span>    
+                    <span span style={{color :'#4e4187', fontSize: 15}}>
+                        &nbsp;Sign up
+                    </span>
+                        </Link>
+                    </span>
+                </p>
+        </section>
+    );
+};
+
+export default Login;
