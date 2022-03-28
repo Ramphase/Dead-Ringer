@@ -42,7 +42,7 @@ function App() {
               <NotificationSettingsPage />
             </Route>
 
-            <Redirect to="/" />
+            <Redirect to="/Homepage" />
         </Switch>  
 
     </Router>
