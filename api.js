@@ -99,7 +99,7 @@ exports.setApp = function ( app, client )
 
     var token = require('./createJWT.js');
 
-    const {userId, message, contact, jwtToken} = req.body;
+    const {userId, name, message, contact, jwtToken} = req.body;
 
     try
     {
@@ -114,7 +114,7 @@ exports.setApp = function ( app, client )
         console.log(e.message);
     }
 
-    const newTrigger = {UserId:userId, Msg:message, Contact:contact};
+    const newTrigger = {UserId:userId, Name:name, Msg:message, Contact:contact};
     var error = '';
     try
     {
