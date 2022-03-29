@@ -94,7 +94,7 @@ exports.setApp = function ( app, client )
 
   app.post('/addTrigger', async (req, res, next) =>
   {
-    // incoming: userId, message, contact
+    // incoming: userId, name, message, contact
     // outgoing: success or error message
 
     var token = require('./createJWT.js');
@@ -138,6 +138,103 @@ exports.setApp = function ( app, client )
     }
 
     var ret = { error: error, jwtToken: refreshedToken };
+    res.status(200).json(ret);
+  });
+  
+    app.delete('/deleteTrigger', async (req, res, next) =>
+  {
+    // incoming: userId, message, contact
+    // outgoing: success or error message
+
+    var token = require('./createJWT.js');
+
+    const {userId, name, message, contact, jwtToken} = req.body;
+    const curTrigger = { UserId:userId, Name:name, Message:message, Contact:contact };
+
+    try
+    {
+        if( token.isExpired(jwtToken)){
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+        }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+
+    var error = '';
+    try
+    {
+      const db = client.db();
+      const result = db.collection('Triggers').deleteOne(curTrigger);
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
+    
+    var refreshedToken = null;
+
+    try
+    {
+        refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+
+    var ret = { error: error, jwtToken: refreshedToken };
+    res.status(200).json(ret);
+  });
+
+  app.post('/searchTriggers', async (req, res, next) => 
+  {
+    // incoming: userId, search
+    // outgoing: results[], error
+  
+    var error = '';
+  
+    const { userId, search, jwtToken } = req.body;
+
+    try
+    {
+      if( token.isExpired(jwtToken))
+      {
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+    
+    var _search = search.trim();
+    const db = client.db();
+    const results = await db.collection('Triggers').find({ "Triggers": { $regex: _search + '.*', $options: 'r' } }).toArray();    
+    
+    var _ret = [];
+    for( var i=0; i<results.length; i++ )
+    {
+      _ret.push( results[i].Triggers );
+    }
+    
+    var refreshedToken = null;
+    try
+    {
+      refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+  
+    var ret = { results:_ret, error: error, jwtToken: refreshedToken };
+    
     res.status(200).json(ret);
   });
 }
