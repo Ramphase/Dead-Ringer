@@ -141,9 +141,9 @@ exports.setApp = function ( app, client )
     res.status(200).json(ret);
   });
   
-    app.delete('/deleteTrigger', async (req, res, next) =>
+  app.delete('/deleteTrigger', async (req, res, next) =>
   {
-    // incoming: userId, message, contact
+    // incoming: userId, name, message, contact
     // outgoing: success or error message
 
     var token = require('./createJWT.js');
@@ -165,10 +165,12 @@ exports.setApp = function ( app, client )
     }
 
     var error = '';
+
     try
     {
       const db = client.db();
-      const result = db.collection('Triggers').deleteOne(curTrigger);
+      db.collection('Triggers').deleteOne(curTrigger);
+      const result = "Trigger deleted";
     }
     catch(e)
     {
