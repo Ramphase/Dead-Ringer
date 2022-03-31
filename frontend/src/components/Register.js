@@ -90,7 +90,7 @@ export function Register() {
                 var user = {firstName:firstName,lastName:lastName,id:userId}
                 localStorage.setItem('user_data', JSON.stringify(user));
                 setMessage('Account Created');
-                window.location.href = '/Login';
+                window.location.href = '/Verify';
             }
 
         })

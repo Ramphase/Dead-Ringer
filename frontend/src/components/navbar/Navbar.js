@@ -20,17 +20,13 @@ return (
 		<NavLink to='/Switches' activeStyle>
 			Switches
 		</NavLink>
-		<NavLink to='/TriggerSettings' activeStyle>
-			Trigger Settings
-		</NavLink>
 		<NavLink to='/Messages' activeStyle>
 			Messages
 		</NavLink>
-		<NavLink to='/NotificationSettings' activeStyle>
-			Notification Settings
+		<NavLink to='/Settings' activeStyle>
+			Settings
 		</NavLink>
-		{/* Second Nav */}
-		{/* <NavBtnLink to='/sign-in'>Sign In</NavBtnLink> */}
+		<NavBtnLink to='/'>Logout</NavBtnLink>
 		</NavMenu>
 	</Nav>
 	</>

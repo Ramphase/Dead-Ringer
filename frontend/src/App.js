@@ -2,11 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import Homepage from './pages/Homepage';
 import MessagesPage from "./pages/MessagesPage";
-import NotificationSettingsPage from "./pages/NotificationSettingsPage";
 import SwitchesPage from "./pages/SwitchesPage";
-import TriggerSettingsPage from "./pages/TriggerSettingsPage";
+import SettingsPage from "./pages/SettingsPage";
+import VerifyPage from './pages/VerifyPage';
 
 function App() {
 
@@ -22,27 +21,23 @@ function App() {
                 <RegisterPage />
             </Route>
 
-            <Route path="/Homepage" exact>
-              <Homepage />
+            <Route path="/Verify" exact>
+              <VerifyPage />
             </Route>
 
             <Route path="/Switches" exact>
               <SwitchesPage />
             </Route>
 
-            <Route path="/TriggerSettings" exact>
-              <TriggerSettingsPage />
+            <Route path="/Settings" exact>
+              <SettingsPage />
             </Route>
 
             <Route path="/Messages" exact>
               <MessagesPage />
             </Route>
 
-            <Route path="/NotificationSettings" exact>
-              <NotificationSettingsPage />
-            </Route>
-
-            <Redirect to="/Homepage" />
+            <Redirect to="/" />
         </Switch>  
 
     </Router>
