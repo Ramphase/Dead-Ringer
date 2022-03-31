@@ -149,8 +149,8 @@ exports.setApp = function ( app, client )
     var token = require('./createJWT.js');
 
     const {userId, name, message, contact, jwtToken} = req.body;
-    const curTrigger = { UserId:userId, Name:name, Message:message, Contact:contact };
-
+    const curTrigger = { UserId:userId, Name:name, Msg:message, Contact:contact };
+    
     try
     {
         if( token.isExpired(jwtToken)){
@@ -163,14 +163,13 @@ exports.setApp = function ( app, client )
     {
         console.log(e.message);
     }
-
+    
     var error = '';
 
     try
     {
       const db = client.db();
       db.collection('Triggers').deleteOne(curTrigger);
-      const result = "Trigger deleted";
     }
     catch(e)
     {
@@ -178,7 +177,7 @@ exports.setApp = function ( app, client )
     }
     
     var refreshedToken = null;
-
+    
     try
     {
         refreshedToken = token.refresh(jwtToken);
@@ -187,11 +186,11 @@ exports.setApp = function ( app, client )
     {
         console.log(e.message);
     }
-
+    
     var ret = { error: error, jwtToken: refreshedToken };
     res.status(200).json(ret);
   });
-
+  
   app.post('/searchTriggers', async (req, res, next) => 
   {
     // incoming: userId, search
