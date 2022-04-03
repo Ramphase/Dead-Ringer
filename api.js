@@ -1,6 +1,10 @@
 require('express');
 require('mongodb');
 
+const Users = require("./models/Users");
+const Triggers = require("./models/Triggers");
+// const Contacts = require("./models/Contacts");
+
 exports.setApp = function ( app, client )
 {
   app.post('/login', async (req, res, next) => 
@@ -13,8 +17,7 @@ exports.setApp = function ( app, client )
 
     const { login, password } = req.body;
 
-    const db = client.db();
-    const results = await db.collection('Users').find({Login:login,Password:password}).toArray();
+    const results = await Users.find({ Login: login, Password: password });
 
     var userId = -1;
     var firstName = '';
@@ -50,15 +53,12 @@ exports.setApp = function ( app, client )
   {
     // Incoming firstName, lastName, email, login, password
     // Outgoing: success or error message
-    
-    const token = require("./createJWT.js");
 
     const { firstName, lastName, email, login, password} = req.body;
-    const newUser = {FirstName:firstName, LastName:lastName, Email:email, Login:login, Password:password};
+    const newUser = {FirstName: firstName, LastName: lastName, Email: email, Login: login, Password: password};
     var error = '';
     
-    const db = client.db();
-    const results = await db.collection('Users').find({Login:login}).toArray();
+    const results = await Users.find({Login: login});
 
     if (results.length != 0)
     {
@@ -68,28 +68,18 @@ exports.setApp = function ( app, client )
       return;
     }
 
-    try
-    {
-        const result = await db.collection('Users').insertOne(newUser);
-    }
-    catch(e)
-    {
-        error = e.toString();
-    }
+    const retNewUser = await new Users(newUser);
 
     try
     {
-      const retNewUser = await db.collection('Users').find({Login:login}).toArray();
-      console.log(retNewUser);
-      retToken = token.createToken( retNewUser[0].FirstName, retNewUser[0].LastName, retNewUser[0].userId );
+      retNewUser.save();
     }
     catch(e)
     {
       error = e.toString();
     }
 
-    ret = Object.assign(retToken, {error:error})
-    res.status(200).json(ret);
+    res.status(200).json("User added.");
   });
 
   app.post('/addTrigger', async (req, res, next) =>
@@ -99,7 +89,8 @@ exports.setApp = function ( app, client )
 
     var token = require('./createJWT.js');
 
-    const {userId, name, message, contact, jwtToken} = req.body;
+    const {userId, triggerName, message, contact, jwtToken} = req.body;
+    const newTrigger = {UserId:userId, TriggerName: triggerName, Message:message, Contact:contact};
 
     try
     {
@@ -114,12 +105,22 @@ exports.setApp = function ( app, client )
         console.log(e.message);
     }
 
-    const newTrigger = {UserId:userId, Name:name, Msg:message, Contact:contact};
+    const results = await Triggers.find({UserId: userId, TriggerName: triggerName});
+
+    if (results.length != 0)
+    {
+      error = "This trigger name is taken";
+      var ret = { error: error };
+      res.status(200).json(ret);
+      return;
+    }
+    
     var error = '';
+
+    const trigger = await new Triggers(newTrigger);
     try
     {
-      const db = client.db();
-      const result = db.collection('Triggers').insertOne(newTrigger);
+      trigger.save();
     }
     catch(e)
     {
@@ -137,19 +138,19 @@ exports.setApp = function ( app, client )
         console.log(e.message);
     }
 
-    var ret = { error: error, jwtToken: refreshedToken };
+    var ret = {error: error, jwtToken: refreshedToken };
     res.status(200).json(ret);
   });
   
   app.delete('/deleteTrigger', async (req, res, next) =>
   {
-    // incoming: userId, name, message, contact
+    // incoming: userId, triggerName
     // outgoing: success or error message
 
     var token = require('./createJWT.js');
 
-    const {userId, name, message, contact, jwtToken} = req.body;
-    const curTrigger = { UserId:userId, Name:name, Msg:message, Contact:contact };
+    const {userId, triggerName, jwtToken} = req.body;
+    const curTrigger = { UserId: userId, TriggerName: triggerName };
     
     try
     {
@@ -166,10 +167,19 @@ exports.setApp = function ( app, client )
     
     var error = '';
 
+    const results = await Triggers.find({UserId: userId, TriggerName: triggerName});
+
+    if (results.length == 0)
+    {
+      error = "This trigger does not exist";
+      var ret = { error: error };
+      res.status(200).json(ret);
+      return;
+    }
+
     try
     {
-      const db = client.db();
-      db.collection('Triggers').deleteOne(curTrigger);
+      await Triggers.find({UserId: userId, TriggerName: triggerName}).remove().exec();
     }
     catch(e)
     {
@@ -197,6 +207,7 @@ exports.setApp = function ( app, client )
     // outgoing: results[], error
   
     var error = '';
+    var token = require('./createJWT.js');
   
     const { userId, search, jwtToken } = req.body;
 
@@ -215,13 +226,12 @@ exports.setApp = function ( app, client )
     }
     
     var _search = search.trim();
-    const db = client.db();
-    const results = await db.collection('Triggers').find({ "Triggers": { $regex: _search + '.*', $options: 'r' } }).toArray();    
+    const results = await Triggers.find({ "Triggers": { $regex: _search + '.*', $options: 'r' } });   
     
     var _ret = [];
     for( var i=0; i<results.length; i++ )
     {
-      _ret.push( results[i].Triggers );
+      _ret.push( results[i].TriggerName, results[i].Message, results[i].Contact );
     }
     
     var refreshedToken = null;
