@@ -1,6 +1,10 @@
 require('express');
 require('mongodb');
 
+const sgMail = require('@sendgrid/mail');
+const crypto = require('crypto');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 const Users = require("./models/Users");
 const Triggers = require("./models/Triggers");
 // const Contacts = require("./models/Contacts");
@@ -22,12 +26,20 @@ exports.setApp = function ( app, client )
     var userId = -1;
     var firstName = '';
     var lastName = '';
+    var emailToken = '';
 
     if( results.length > 0 )
     {
       userId = results[0].UserId;
       firstName = results[0].FirstName;
       lastName = results[0].LastName;
+      emailToken = results[0].EmailToken;
+
+      if(emailToken != null){
+        ret = {error:"Email is not verified for this user"};
+        res.status(200).json( ret );
+        return;
+      }
 
       try
       {
@@ -36,7 +48,6 @@ exports.setApp = function ( app, client )
       }
       catch(e)
       {
-          
           ret = {error:e.message};
       }
     }
@@ -55,7 +66,9 @@ exports.setApp = function ( app, client )
     // Outgoing: success or error message
 
     const { firstName, lastName, email, login, password} = req.body;
-    const newUser = {FirstName: firstName, LastName: lastName, Email: email, Login: login, Password: password};
+    const newUser = {FirstName: firstName, LastName: lastName, Email: email, 
+                    EmailToken: crypto.randomBytes(64).toString('hex'), 
+                    IsVerified: false, Login: login, Password: password};
     var error = '';
     
     const results = await Users.find({Login: login});
@@ -79,7 +92,64 @@ exports.setApp = function ( app, client )
       error = e.toString();
     }
 
-    res.status(200).json("User added.");
+    const msg = {
+      from: 'gavinb@knights.ucf.edu',
+      to: newUser.Email,
+      subject: "Dead Ringer | Verify your Email",
+      test: `
+        Hello, thanks for registering for Dead Ringer.
+        Please click the link below to verify your account.
+        http://${req.headers.host}/verify-email?token=${newUser.EmailToken}
+      `,
+      html: `
+        <h1>Hello,</h1>
+        <p>thanks for registering for Dead Ringer.</p>
+        <p>Please click the link below to verify your account.</p>
+        <a href="http://${req.headers.host}/verify-email?token=${newUser.EmailToken}">Verify your Account</a>
+      `
+    }
+
+    try{
+      await sgMail.send(msg);
+
+      error = "Please check your email to verify your account.";
+      var ret = {error: error };
+      return res.status(200).json(ret);
+
+    } catch(e){
+      console.log(e);
+
+      error = "Something went wrong.";
+      var ret = {error: error };
+      return res.status(200).json(ret);
+    }
+
+  });
+
+  app.get('/verify-email', async(req, res, next) =>{
+
+    try{
+      const user = await Users.findOne({ EmailToken: req.query.token });
+
+      if(!user){
+        error = "Token is invalid.";
+        var ret = {error: error };
+        return res.status(200).json(ret);
+      } 
+
+      user.EmailToken = null;
+      user.IsVerified = true;
+
+      user.save();
+
+      return res.status(200).send("Success. Welcome to Dead Ringer.");
+
+    } catch(error){
+      console.log(error);
+
+      return res.status(200).send("Something went wrong.");
+    }
+  
   });
 
   app.post('/addTrigger', async (req, res, next) =>
