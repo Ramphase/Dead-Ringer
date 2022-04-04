@@ -5,7 +5,6 @@ import RegisterPage from './pages/RegisterPage';
 import MessagesPage from "./pages/MessagesPage";
 import SwitchesPage from "./pages/SwitchesPage";
 import SettingsPage from "./pages/SettingsPage";
-import VerifyPage from './pages/VerifyPage';
 
 function App() {
 
@@ -21,10 +20,6 @@ function App() {
                 <RegisterPage />
             </Route>
 
-            <Route path="/Verify" exact>
-              <VerifyPage />
-            </Route>
-
             <Route path="/Switches" exact>
               <SwitchesPage />
             </Route>
@@ -37,7 +32,7 @@ function App() {
               <MessagesPage />
             </Route>
 
-            <Redirect to="/" />
+            <Redirect to="/Switches" />
         </Switch>  
 
     </Router>
