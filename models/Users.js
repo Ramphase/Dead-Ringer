@@ -17,6 +17,12 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  EmailToken: {
+    type: String
+  },
+  IsVerified: {
+    type: Boolean
+  },
   Login: {
     type: String,
     required: true
