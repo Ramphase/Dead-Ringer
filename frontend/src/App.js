@@ -5,6 +5,7 @@ import RegisterPage from './pages/RegisterPage';
 import MessagesPage from "./pages/MessagesPage";
 import SwitchesPage from "./pages/SwitchesPage";
 import SettingsPage from "./pages/SettingsPage";
+import MessageContextProvider from './components/messages/context/MessageContext';
 
 function App() {
 
@@ -28,11 +29,14 @@ function App() {
               <SettingsPage />
             </Route>
 
+            <MessageContextProvider>
             <Route path="/Messages" exact>
               <MessagesPage />
             </Route>
+            </MessageContextProvider>
+            
 
-            <Redirect to="/Switches" />
+            <Redirect to="/" />
         </Switch>  
 
     </Router>

@@ -1,6 +1,7 @@
 import React from 'react';
 import Navbar from '../components/navbar/Navbar'
-import Messages from '../components/Messages';
+import Messages from '../components/messages/Messages';
+
 
 const MessagesPage = () => {
 return (
