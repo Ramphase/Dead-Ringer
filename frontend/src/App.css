@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
 
 * {
   font-family: "Nunito", sans-serif;
@@ -8,16 +8,89 @@ text {
   color: white;
 }
 
-.bg{
+.bg {
   background-color: rgb(69, 7, 7);
   text-align: center;
   padding: 20px;
 }
 
-.bg h1{
+.bg h1 {
   color: white;
 }
 
-.bg p{
+.bg p {
   color: white;
+}
+
+#sTable {
+  color: white;
+}
+
+td {
+  padding: 5px;
+}
+
+table {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  flex-grow: 1;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+button.bDel {
+  background-image: url(./components/images/delete.png);
+  background-size: contain;
+  height: 100%;
+  background-color: transparent;
+  background-position: center center;
+  background-repeat: no-repeat;
+  color: transparent;
+  vertical-align: middle;
+}
+
+input.bSave {
+  background-image: url(./components/images/save.png);
+  background-size: contain;
+  background-color: transparent;
+  height: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  border: none;
+  color: transparent;
+}
+
+button.bEdit {
+  background-image: url(./components/images/edit.png);
+  background-size: contain;
+  background-color: transparent;
+  height: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  color: transparent;
+}
+
+div.popup {
+    background-color: rgb(255,255,255);
+    padding: 10px;
+    width: 30vw;
+    min-width: 500px;
+    box-shadow: 0px 0px 10px 10px black;
+    font-size: smaller;
+}
+
+div.popcon {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  box-shadow: none;
+
+}
+
+div.popcon > div {
+  margin: 10px;
 }
