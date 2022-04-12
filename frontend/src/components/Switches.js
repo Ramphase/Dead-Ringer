@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import '../App.css'
 import Table from './table/tableSwitches';
-import Popup from './Popup/popup';
+import Popup from './popup';
 import { useModal } from 'react-hooks-use-modal';
 
 function Switches() {
