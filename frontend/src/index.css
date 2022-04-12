@@ -87,6 +87,8 @@ a:visited {
 input,
 input[type="text"],
 input[type="password"],
+input[type="email"],
+input[type="phone"]
 textarea {
   display: block;
   width: 100%;
@@ -116,6 +118,8 @@ button {
   cursor: pointer;
   background: var(--color-primary);
 }
+
+
 
 button:hover {
   background: var(--color-primary-dark);
@@ -189,6 +193,7 @@ input:focus {
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
   border-radius: var(--border-radius);
   background: #ffffff;
+  
 }
 
 .side-by-side {
@@ -235,6 +240,7 @@ input:focus {
 }
 .modal .modal-header, .modal .modal-body, .modal .modal-footer {
 	padding: 20px 30px;
+  
 }
 .modal .modal-content {
 	border-radius: 3px;
@@ -244,8 +250,12 @@ input:focus {
 	background: #ecf0f1;
 	border-radius: 0 0 3px 3px;
 }
-.modal .modal-title {
+Modal-Title {
 	display: inline-block;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: "Nunito", sans-serif;
 }
 .modal .form-control {
 	border-radius: 2px;
@@ -254,11 +264,9 @@ input:focus {
 }
 .modal textarea.form-control {
 	resize: vertical;
-}
-.modal .btn {
-	border-radius: 2px;
-	min-width: 100px;
-}	
+}  
+
+	
 .modal form label {
 	font-weight: normal;
 }	
@@ -268,4 +276,12 @@ input:focus {
    width:1440px; /* or whatever width you want. */
    max-width:1440px; /* or whatever width you want. */
    display: inline-block;
+}
+
+.btn
+{
+  width: 300px;
+  height: 50px;
+  justify-content: 'center';
+  align-items: 'center'
 }

@@ -33,6 +33,7 @@ const AddForm = () =>{
                     placeholder="Name"
                     name="messageName"
                     value={messageName}
+                    className="mb-3 mt-1"
                     onChange = { (e) => onInputChange(e)}
                     required
                 />
@@ -41,16 +42,18 @@ const AddForm = () =>{
                 <Form.Control
                     as="textarea" 
                     rows={3}
-                    placeholder="Enter your message *"
+                    placeholder="Enter your message"
                     name="switchMessage"
                     value={switchMessage}
                     onChange = { (e) => onInputChange(e)}
                     required
                 />
             </Form.Group>
-            <Button variant="success" type="submit" block>
-                Create New Message
+            <div style={{paddingLeft:20}}>
+            <Button className="mt-4 button" type="submit" block>
+                Create Messsage
             </Button>
+            </div>
         </Form>
 
      )

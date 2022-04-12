@@ -3,9 +3,11 @@ import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-d
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import MessagesPage from "./pages/MessagesPage";
+import ContactsPage from './pages/ContactsPage';
 import SwitchesPage from "./pages/SwitchesPage";
 import SettingsPage from "./pages/SettingsPage";
 import MessageContextProvider from './components/messages/context/MessageContext';
+import ContactContextProvider from './components/contacts/context/ContactContext'
 
 function App() {
 
@@ -29,11 +31,16 @@ function App() {
               <SettingsPage />
             </Route>
 
+            <Route path="/Contacts" exact>
+              <ContactsPage />
+            </Route>
+
             <MessageContextProvider>
             <Route path="/Messages" exact>
               <MessagesPage />
             </Route>
             </MessageContextProvider>
+            
             
 
             <Redirect to="/" />

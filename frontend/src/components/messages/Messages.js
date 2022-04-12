@@ -19,7 +19,7 @@ const Messages = () =>
   //const handleShowAlert = () =>setShowAlert(true);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [messagesPerPage] = useState(2)
+  const [messagesPerPage] = useState(3)
 
   const handleShowAlert = () => {
       setShowAlert(true);
@@ -57,6 +57,11 @@ const Messages = () =>
           <div className="messages container">
           
               <table className="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Message</th>
+                </tr>
+              </thead>
               <tbody>
               {
                 currentMessages.map(message => (
@@ -69,7 +74,7 @@ const Messages = () =>
             </table>
 
             <div>
-                <button onClick={handleShow} className="btn btn-success mt-3 mb-4" data-toggle="modal"><span>Create New Message</span></button>					
+                <Button onClick={handleShow} className="button mt-3 mb-4" data-toggle="modal"><span>Create New Message</span></Button>					
             </div>
 
             <Pagination pages = {totalPagesNum}
@@ -78,26 +83,16 @@ const Messages = () =>
                 sortedMessages = {sortedMessages} />
             </div>
         </div>
-          
-         
-
-              
-
-                <Modal show={show} onHide={handleClose}>
-                 <Modal.Header closeButton>
+            <Modal show={show} onHide={handleClose}>
+               <Modal.Header closeButton>
                    <Modal.Title>
-                     Message
-                  </Modal.Title>
+                       Message
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   <AddForm />
                 </Modal.Body>
-                <Modal.Footer>
-                 <Button variant="secondary" onClick={handleClose}>
-                    Close Button
-                </Button>
-              </Modal.Footer>
-            </Modal>
+              </Modal>
            </div>
            
        

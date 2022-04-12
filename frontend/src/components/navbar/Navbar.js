@@ -23,6 +23,9 @@ return (
 		<NavLink to='/Messages' activeStyle>
 			Messages
 		</NavLink>
+		<NavLink to='/Contacts' activeStyle>
+			Contacts
+		</NavLink>
 		<NavLink to='/Settings' activeStyle>
 			Settings
 		</NavLink>
