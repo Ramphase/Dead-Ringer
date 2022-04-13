@@ -10,7 +10,7 @@ const MessagesSchema = new Schema({
     type: Number,
     required: true
   },
-  Test: {
+  Text: {
     type: String,
     required: true
   }
