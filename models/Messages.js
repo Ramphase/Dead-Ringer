@@ -7,7 +7,7 @@ const MessagesSchema = new Schema({
     required: true
   },
   MessageName: {
-    type: Number,
+    type: String,
     required: true
   },
   Text: {
