@@ -7,8 +7,8 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const Users = require("./models/Users");
 const Triggers = require("./models/Triggers");
-// const Contacts = require("./models/Contacts");
-// const Messages = require("./models/Messages");
+const Contacts = require("./models/Contacts");
+const Messages = require("./models/Messages");
 
 exports.setApp = function ( app, client )
 {
