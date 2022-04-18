@@ -414,4 +414,162 @@ exports.setApp = function ( app, client )
     
     res.status(200).json(ret);
   });
+  
+  app.post('/addContact', async (req, res, next) =>
+  {
+    // incoming: contactId, userId, fname, lname, email, phoneNumber
+    // outgoing: success or error message
+
+    var token = require('./createJWT.js');
+
+    const {contactId, userId, fname, lname, email, phoneNumber, jwtToken} = req.body;
+    const newContact = {ContactId:contactId, UserId:userId, FirstName:fname, LastName:lname, Email:email, PhoneNumber:phoneNumber};
+
+    try
+    {
+        if( token.isExpired(jwtToken)){
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+        }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+
+    
+    var error = '';
+
+    const contact = await new Contacts(newContact);
+    try
+    {
+      contact.save();
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
+    
+    var refreshedToken = null;
+
+    try
+    {
+        refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+
+    var ret = {error: error, jwtToken: refreshedToken };
+    res.status(200).json(ret);
+  });
+
+  app.delete('/deleteContact', async (req, res, next) =>
+  {
+    // incoming: contactId, userId
+    // outgoing: success or error message
+
+    var token = require('./createJWT.js');
+
+    const {contactId, userId, jwtToken} = req.body;
+    const curContact = {ContactId: contactId, UserId: userId};
+    
+    try
+    {
+        if(token.isExpired(jwtToken)){
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+        }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+    
+    var error = '';
+
+    const results = await Contacts.find(curContact);
+
+    if (results.length == 0)
+    {
+      error = "This contact does not exist";
+      var ret = { error: error };
+      res.status(200).json(ret);
+      return;
+    }
+
+    try
+    {
+      await Contacts.find(curContact).remove().exec();
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
+    
+    var refreshedToken = null;
+    
+    try
+    {
+        refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+    
+    var ret = { error: error, jwtToken: refreshedToken };
+    res.status(200).json(ret);
+  });
+
+  app.post('/searchContacts', async (req, res, next) => 
+  {
+    // incoming: userId, search
+    // outgoing: results[], error
+  
+    var error = '';
+    var token = require('./createJWT.js');
+  
+    const { userId, search, jwtToken } = req.body;
+
+    try
+    {
+      if( token.isExpired(jwtToken))
+      {
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+    
+    var _search = search.trim();
+    const results = await Contacts.find({ "Contacts": { $regex: _search + '.*', $options: 'r' } });   
+    
+    var _ret = [];
+    for( var i=0; i<results.length; i++ )
+    {
+      _ret.push( results[i].ContactId, results[i].FirstName, results[i].LastName, results[i].Email, results[i].PhoneNumber );
+    }
+    
+    var refreshedToken = null;
+    try
+    {
+      refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+  
+    var ret = { results:_ret, error: error, jwtToken: refreshedToken };
+    
+    res.status(200).json(ret);
+  });
 }
