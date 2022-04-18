@@ -152,6 +152,101 @@ exports.setApp = function ( app, client )
     }
   
   });
+  
+    app.post('/addMessage', async (req, res, next) =>
+    {
+      // incoming: userId, messageName, text
+      // outgoing: success or error message
+  
+      var token = require('./createJWT.js');
+  
+      const {userId, triggerName, messageName, text, jwtToken} = req.body;
+      const newMessage = {UserId:userId, MessagName:messageName, Text:text};
+  
+      try
+      {
+          if( token.isExpired(jwtToken)){
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+          }
+      }
+      catch(e)
+      {
+          console.log(e.message);
+      }
+      
+      var error = '';
+      const message1 = await new Messages(newMessage);
+  
+      try
+      {
+        message1.save();
+      }
+      catch(e)
+      {
+        error = e.toString();
+      }
+      
+      var refreshedToken = null;
+  
+      try
+      {
+          refreshedToken = token.refresh(jwtToken);
+      }
+      catch(e)
+      {
+          console.log(e.message);
+      }
+  
+      var ret = {error: error, jwtToken: refreshedToken };
+      res.status(200).json(ret);
+    });
+  
+    app.post('/displayMessages', async (req, res, next) =>
+    {
+      // incoming: userId
+      // outgoing: results[], error
+      
+      var token = require('./createJWT.js');
+      const {userId, jwtToken} = req.body;
+
+      try
+      {
+          if( token.isExpired(jwtToken)){
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+          }
+      }
+      catch(e)
+      {
+          console.log(e.message);
+      }
+
+      const results = await Messages.find({UserId:userId});
+
+      var error = '';
+
+      var _ret = [];
+      for( var i=0; i<results.length; i++ )
+      {
+        _ret.push( results[i].MessageName);
+      }
+      
+      var refreshedToken = null;
+      try
+      {
+        refreshedToken = token.refresh(jwtToken);
+      }
+      catch(e)
+      {
+        console.log(e.message);
+      }
+    
+      var ret = { results:_ret, error: error, jwtToken: refreshedToken }; 
+      res.status(200).json(ret);
+    });
 
   app.post('/addTrigger', async (req, res, next) =>
   {
