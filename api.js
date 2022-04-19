@@ -10,6 +10,8 @@ const Triggers = require("./models/Triggers");
 const Contacts = require("./models/Contacts");
 const Messages = require("./models/Messages");
 
+
+// Login 
 exports.setApp = function ( app, client )
 {
   app.post('/login', async (req, res, next) => 
@@ -61,6 +63,7 @@ exports.setApp = function ( app, client )
 
   });
 
+  //Register 
   app.post('/register', async (req, res, next) => 
   {
     // Incoming firstName, lastName, email, login, password
@@ -127,6 +130,7 @@ exports.setApp = function ( app, client )
 
   });
 
+  //Verify Email
   app.get('/verify-email', async(req, res, next) =>{
 
     try{
@@ -153,15 +157,16 @@ exports.setApp = function ( app, client )
   
   });
   
-    app.post('/addMessage', async (req, res, next) =>
+  //Add Message
+  app.post('/addMessage', async (req, res, next) =>
     {
-      // incoming: userId, messageName, text
+      // incoming: userId, messageName, text, jwtToken
       // outgoing: success or error message
   
       var token = require('./createJWT.js');
   
-      const {userId, triggerName, messageName, text, jwtToken} = req.body;
-      const newMessage = {UserId:userId, MessagName:messageName, Text:text};
+      const {userId, messageName, text, jwtToken} = req.body;
+      const newMessage = {UserId:userId, MessageName:messageName, Text:text};
   
       try
       {
@@ -174,6 +179,16 @@ exports.setApp = function ( app, client )
       catch(e)
       {
           console.log(e.message);
+      }
+
+      const results = await Messages.find({UserId: userId, MessageName: messageName});
+
+      if (results.length != 0)
+      {
+        error = "A message with this name exists";
+        var ret = { error: error };
+        res.status(200).json(ret);
+        return;
       }
       
       var error = '';
@@ -203,9 +218,10 @@ exports.setApp = function ( app, client )
       res.status(200).json(ret);
     });
   
+    //Display Messages
     app.post('/displayMessages', async (req, res, next) =>
     {
-      // incoming: userId
+      // incoming: userId, jwtToken
       // outgoing: results[], error
       
       var token = require('./createJWT.js');
@@ -231,7 +247,7 @@ exports.setApp = function ( app, client )
       var _ret = [];
       for( var i=0; i<results.length; i++ )
       {
-        _ret.push( results[i].MessageName);
+        _ret.push({MessageName:results[i].MessageName, Text:results[i].Text});
       }
       
       var refreshedToken = null;
@@ -247,16 +263,28 @@ exports.setApp = function ( app, client )
       var ret = { results:_ret, error: error, jwtToken: refreshedToken }; 
       res.status(200).json(ret);
     });
-
+  
+  //Add Trigger
   app.post('/addTrigger', async (req, res, next) =>
   {
-    // incoming: userId, name, message, contact
+    // incoming: userId, triggerName, messageName, contactId(s) Ex: [4,6,19], jwtToken
     // outgoing: success or error message
 
     var token = require('./createJWT.js');
 
-    const {userId, triggerName, message, contact, jwtToken} = req.body;
-    const newTrigger = {UserId:userId, TriggerName: triggerName, Message:message, Contact:contact};
+    const {userId, triggerName, messageName, contactId, jwtToken} = req.body;
+
+    //Gets the message text from the recieved message name
+    const msgResults = await Messages.find({UserId: userId, MessageName: messageName});
+
+    if (msgResults.length == 0)
+    {
+      var r = {error:'Message does not exist'};
+      res.status(200).json(r);
+      return;
+    }
+
+    const newTrigger = {UserId:userId, TriggerName: triggerName, Message: msgResults[0].Text, Contact: contactId};
 
     try
     {
@@ -308,15 +336,15 @@ exports.setApp = function ( app, client )
     res.status(200).json(ret);
   });
   
-  app.delete('/deleteTrigger', async (req, res, next) =>
+  //Delete Trigger
+  app.post('/deleteTrigger', async (req, res, next) =>
   {
-    // incoming: userId, triggerName
+    // incoming: userId, triggerName, jwtToken
     // outgoing: success or error message
 
     var token = require('./createJWT.js');
 
     const {userId, triggerName, jwtToken} = req.body;
-    const curTrigger = { UserId: userId, TriggerName: triggerName };
     
     try
     {
@@ -367,15 +395,16 @@ exports.setApp = function ( app, client )
     res.status(200).json(ret);
   });
   
+  //Search triggers
   app.post('/searchTriggers', async (req, res, next) => 
   {
-    // incoming: userId, search
+    // incoming: userId, search, jwtToken
     // outgoing: results[], error
   
     var error = '';
     var token = require('./createJWT.js');
   
-    const { userId, search, jwtToken } = req.body;
+    const {userId, search, jwtToken } = req.body;
 
     try
     {
@@ -392,12 +421,13 @@ exports.setApp = function ( app, client )
     }
     
     var _search = search.trim();
-    const results = await Triggers.find({ "Triggers": { $regex: _search + '.*', $options: 'r' } });   
+    //Search is caps sensitive right now for some reason?
+    const results = await Triggers.find({UserId: userId, TriggerName: { $regex: _search + '.*', $options: 'r' } });   
     
     var _ret = [];
     for( var i=0; i<results.length; i++ )
     {
-      _ret.push( results[i].TriggerName, results[i].Message, results[i].Contact );
+      _ret.push({TriggerName: results[i].TriggerName, Message: results[i].Message, Contact: results[i].Contact});
     }
     
     var refreshedToken = null;
@@ -415,15 +445,16 @@ exports.setApp = function ( app, client )
     res.status(200).json(ret);
   });
   
+  //Add Contact
   app.post('/addContact', async (req, res, next) =>
   {
-    // incoming: contactId, userId, fname, lname, email, phoneNumber
+    // incoming: userId, firstName, lastName, email, phoneNumber (not required), jwtToken
     // outgoing: success or error message
 
     var token = require('./createJWT.js');
 
-    const {contactId, userId, fname, lname, email, phoneNumber, jwtToken} = req.body;
-    const newContact = {ContactId:contactId, UserId:userId, FirstName:fname, LastName:lname, Email:email, PhoneNumber:phoneNumber};
+    const {userId, firstName, lastName, email, phoneNumber, jwtToken} = req.body;
+    const newContact = {UserId: userId, FirstName: firstName, LastName: lastName, Email: email, PhoneNumber: phoneNumber};
 
     try
     {
@@ -466,7 +497,8 @@ exports.setApp = function ( app, client )
     res.status(200).json(ret);
   });
 
-  app.delete('/deleteContact', async (req, res, next) =>
+  //Delete Contact
+  app.post('/deleteContact', async (req, res, next) =>
   {
     // incoming: contactId, userId
     // outgoing: success or error message
@@ -525,6 +557,7 @@ exports.setApp = function ( app, client )
     res.status(200).json(ret);
   });
 
+  //Search Contacts
   app.post('/searchContacts', async (req, res, next) => 
   {
     // incoming: userId, search
@@ -550,12 +583,12 @@ exports.setApp = function ( app, client )
     }
     
     var _search = search.trim();
-    const results = await Contacts.find({ "Contacts": { $regex: _search + '.*', $options: 'r' } });   
+    const results = await Contacts.find({UserId: userId, FirstName: { $regex: _search + '.*', $options: 'r' } });   
     
     var _ret = [];
     for( var i=0; i<results.length; i++ )
     {
-      _ret.push( results[i].ContactId, results[i].FirstName, results[i].LastName, results[i].Email, results[i].PhoneNumber );
+      _ret.push({contactId: results[i].ContactId, firstName: results[i].FirstName, lastName: results[i].LastName, email: results[i].Email, phoneNumber: results[i].PhoneNumber });
     }
     
     var refreshedToken = null;
@@ -572,4 +605,53 @@ exports.setApp = function ( app, client )
     
     res.status(200).json(ret);
   });
+
+  //Display Contacts
+  app.post('/displayContacts', async (req, res, next) => 
+  {
+    // incoming: userId
+    // outgoing: results[], error
+  
+    var error = '';
+    var token = require('./createJWT.js');
+  
+    const { userId, jwtToken } = req.body;
+
+    try
+    {
+      if( token.isExpired(jwtToken))
+      {
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+    
+    const results = await Contacts.find({UserId: userId});   
+    
+    var _ret = [];
+    for( var i=0; i<results.length; i++ )
+    {
+      _ret.push({contactId: results[i].ContactId, firstName: results[i].FirstName, email: results[i].Email, phoneNumber: results[i].PhoneNumber });
+    }
+    
+    var refreshedToken = null;
+    try
+    {
+      refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+  
+    var ret = { results:_ret, error: error, jwtToken: refreshedToken };
+    
+    res.status(200).json(ret);
+  });
+
 }
