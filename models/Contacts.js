@@ -22,8 +22,7 @@ const ContactsSchema = new Schema({
     required: true
   },
   PhoneNumber: {
-    type: String,
-    required: true
+    type: String
   }
 });
 
