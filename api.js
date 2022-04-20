@@ -1,6 +1,7 @@
 require('express');
 require('mongodb');
 
+const axios = require('axios')
 const sgMail = require('@sendgrid/mail');
 const crypto = require('crypto');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -778,5 +779,214 @@ exports.setApp = function ( app, client )
     
     res.status(200).json(ret);
   });
+  
+  //Execute Trigger
+  app.post('/executeTrigger', async (req, res, next) => 
+    {
+      // incoming: userId, triggerName, jwtToken
+      // outgoing: success or error message
+    
+      var error = '';
+      var token = require('./createJWT.js');
+      const { userId, triggerName, jwtToken } = req.body;
+
+      //Check if trigger exists
+      const triggerResult = await Triggers.find({UserId: userId, TriggerName: triggerName});
+
+      if (triggerResult.length == 0)
+      {
+        error = "Trigger does not exist";
+        var ret = { error: error };
+        res.status(200).json(ret);
+        return;
+      }
+
+      //Grabs FirstName of User
+      const userResult = await Users.find({UserId: userId});
+
+      if (userResult.length == 0)
+      {
+        error = "This user does not exist";
+        var ret = { error: error };
+        res.status(200).json(ret);
+        return;
+      }
+
+      var contactId = new Array();
+      for(i = 0; i < triggerResult.length; i++){
+        contactId.push(triggerResult[i].Contact);
+      }
+      contactId = String(contactId).split(',')
+
+      const _contactId = [];
+      
+      contactId.forEach(str => {
+        _contactId.push(Number(str));
+      });
+      
+      const message = triggerResult[0].Message;
+      const User_Name = userResult[0].FirstName;
+  
+      try
+      {
+        if( token.isExpired(jwtToken))
+        {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+        }
+      }
+      catch(e)
+      {
+        console.log(e.message);
+      }
+
+      var email = [];
+      var messages = new Array();
+
+      try{
+        for(i = 0; i < contactId.length; i++){
+
+          var contactResult = await Contacts.find({ContactId: _contactId[i]});
+          
+          if (contactResult.length == 0)
+          {
+            error = "These contact(s) does not exist";
+            var ret = { error: error };
+            res.status(200).json(ret);
+            return;
+          }
+
+          email.push(contactResult[0].Email)
+        }
+
+      } catch (e){
+        res.status(200).json(e);
+        return;
+      }
+
+      var msg = {
+        from: 'gavinb@knights.ucf.edu',
+        to: email,
+        subject: "Dead Ringer | Alert From " + User_Name,
+        test: `
+          ${User_Name} has sent you an emergency message.
+          ${message}          
+        `,
+        html: `
+          <h1>${User_Name} has sent you an emergency message.</h1>
+          ${message}
+        `
+      }
+
+      messages[i] = msg;
+  
+      try{
+        await sgMail.sendMultiple(messages);
+
+      } catch(e){
+        console.log(e);
+  
+        error = "Something went wrong.";
+        var ret = {error: error };
+        return res.status(200).json(ret);
+        }
+
+      //Delete Trigger after execution
+      try
+      {
+        await Triggers.find({UserId: userId, TriggerName: triggerName}).deleteOne().exec();
+      }
+      catch(e)
+      {
+        error = e.toString();
+      }
+
+      var refreshedToken = null;
+      try
+      {
+        refreshedToken = token.refresh(jwtToken);
+      }
+      catch(e)
+      {
+        console.log(e.message);
+      }
+    
+      var ret = {error: error, jwtToken: refreshedToken};
+      res.status(200).json(ret);
+    });
+
+    var num = 0
+
+    //Check Trigger Timers
+    setInterval(async () =>{
+      //Increment post tracker
+      num++
+      console.log('Wait 2 seconds...')
+
+
+      Triggers.updateMany({}, 
+        {$inc: {Time: -2}}, function (err, docs) {
+        if (err){
+            console.log(err)
+        }
+        else{
+          //Uncomment for debugging purposes
+          //console.log("Updated Docs : ", docs);
+        }
+      });
+
+      const triggerResults = await Triggers.find().where('Time').lte(0).exec();
+
+      
+      if(triggerResults != null){
+        for(i = 0; i < triggerResults.length; i++){
+          console.log(triggerResults[i].TriggerName + " is ready to execute!\n")
+
+          //Get userId of Trigger
+          var userIdResult = await Triggers.find({TriggerName: triggerResults[i].TriggerName})
+
+          if (userIdResult.length == 0)
+          {
+            console.log("No userId");
+            return;
+          }
+
+          //Grabbing user info
+          var userResult = await Users.find({UserId: userIdResult[0].UserId})
+
+          if (userResult.length == 0)
+          {
+            console.log("No user");
+            return;
+          }
+
+          //Getting JWT
+          try{
+            const token = require("./createJWT.js");
+            ret = token.createToken( userResult[0].FirstName, userResult[0].LastName, userIdResult[0].UserId);
+            console.log(ret);
+          } catch (e){
+            console.log(e);
+            return;
+          }
+
+          
+          var _ret = JSON.parse(JSON.stringify(ret));
+      
+          axios.post('https://dead-ringer.herokuapp.com/executeTrigger', { // change route
+            jwtToken: _ret.accessToken,  
+            userId: userIdResult[0].UserId, 
+            triggerName: triggerResults[i].TriggerName
+          })
+          .then((response) => {
+            console.log(response);
+          }, (error) => {
+            console.log(error);
+          });
+        }
+      }
+
+    }, 2000);
 
 }
