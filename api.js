@@ -159,110 +159,176 @@ exports.setApp = function ( app, client )
   
   //Add Message
   app.post('/addMessage', async (req, res, next) =>
+  {
+    // incoming: userId, messageName, text, jwtToken
+    // outgoing: success or error message
+  
+    var token = require('./createJWT.js');
+  
+    const {userId, messageName, text, jwtToken} = req.body;
+    const newMessage = {UserId:userId, MessageName:messageName, Text:text};
+  
+    try
     {
-      // incoming: userId, messageName, text, jwtToken
-      // outgoing: success or error message
-  
-      var token = require('./createJWT.js');
-  
-      const {userId, messageName, text, jwtToken} = req.body;
-      const newMessage = {UserId:userId, MessageName:messageName, Text:text};
-  
-      try
-      {
-          if( token.isExpired(jwtToken)){
+        if( token.isExpired(jwtToken)){
           var r = {error:'The JWT is no longer valid', jwtToken: ''};
           res.status(200).json(r);
           return;
-          }
-      }
-      catch(e)
-      {
-          console.log(e.message);
-      }
+        }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
 
-      const results = await Messages.find({UserId: userId, MessageName: messageName});
+    const results = await Messages.find({UserId: userId, MessageName: messageName});
 
-      if (results.length != 0)
-      {
-        error = "A message with this name exists";
-        var ret = { error: error };
-        res.status(200).json(ret);
+    if (results.length != 0)
+    {
+      error = "A message with this name exists";
+      var ret = { error: error };
+      res.status(200).json(ret);
+      return;
+    }
+      
+    var error = '';
+    const message1 = await new Messages(newMessage);
+  
+    try
+    {
+      message1.save();
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
+      
+    var refreshedToken = null;
+  
+    try
+    {
+        refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+  
+    var ret = {error: error, jwtToken: refreshedToken };
+    res.status(200).json(ret);
+  });
+
+  app.post('/editMessage', async (req, res, next) =>
+  {
+    // incoming: userId, messageName, text, jwtToken
+    // outgoing: success or error message
+    
+    var token = require('./createJWT.js');
+    
+    const {userId, messageName, newMessageName, text, jwtToken} = req.body;
+    
+    try
+    {
+      if( token.isExpired(jwtToken)){
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
         return;
       }
-      
-      var error = '';
-      const message1 = await new Messages(newMessage);
-  
-      try
-      {
-        message1.save();
-      }
-      catch(e)
-      {
-        error = e.toString();
-      }
-      
-      var refreshedToken = null;
-  
-      try
-      {
-          refreshedToken = token.refresh(jwtToken);
-      }
-      catch(e)
-      {
-          console.log(e.message);
-      }
-  
-      var ret = {error: error, jwtToken: refreshedToken };
-      res.status(200).json(ret);
-    });
-  
-    //Display Messages
-    app.post('/displayMessages', async (req, res, next) =>
+    }
+    catch(e)
     {
-      // incoming: userId, jwtToken
-      // outgoing: results[], error
-      
-      var token = require('./createJWT.js');
-      const {userId, jwtToken} = req.body;
+      console.log(e.message);
+    }
 
-      try
-      {
-          if( token.isExpired(jwtToken)){
-          var r = {error:'The JWT is no longer valid', jwtToken: ''};
-          res.status(200).json(r);
-          return;
-          }
-      }
-      catch(e)
-      {
-          console.log(e.message);
-      }
+    // if newMessageName already exists for that user, error
+    const results = await Users.find({MessageName: newMessageName});
 
-      const results = await Messages.find({UserId:userId});
-
-      var error = '';
-
-      var _ret = [];
-      for( var i=0; i<results.length; i++ )
-      {
-        _ret.push({MessageName:results[i].MessageName, Text:results[i].Text});
-      }
-      
-      var refreshedToken = null;
-      try
-      {
-        refreshedToken = token.refresh(jwtToken);
-      }
-      catch(e)
-      {
-        console.log(e.message);
-      }
-    
-      var ret = { results:_ret, error: error, jwtToken: refreshedToken }; 
+    if (results.length != 0)
+    {
+      error = "This Message Name is taken";
+      var ret = { error: error };
       res.status(200).json(ret);
-    });
+      return;
+    }
+        
+    var error = '';
+    
+    try
+    {
+      if (newMessageName)
+      {
+        const editMessage = await Messages.findOneAndUpdate({UserId:userId}, {MessageName:messageName}, {$set: {MessageName:newMessageName}}, {$set: {Text:text}});
+      }
+      else
+      {
+        const editMessage = await Messages.findOneAndUpdate({UserId:userId}, {MessageName:messageName}, {$set: {Text:text}});
+      }
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
+        
+    var refreshedToken = null;
+    
+    try
+    {
+      refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+    
+    var ret = {error: error, jwtToken: refreshedToken};
+    res.status(200).json(ret);
+  });
+  
+  //Display Messages
+  app.post('/displayMessages', async (req, res, next) =>
+  {
+    // incoming: userId, jwtToken
+    // outgoing: results[], error
+      
+    var token = require('./createJWT.js');
+    const {userId, jwtToken} = req.body;
+
+    try
+    {
+      if( token.isExpired(jwtToken)){
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+
+    const results = await Messages.find({UserId:userId});
+
+    var error = '';
+
+    var _ret = [];
+    for( var i=0; i<results.length; i++ )
+    {
+      _ret.push({MessageName:results[i].MessageName, Text:results[i].Text});
+    }
+      
+    var refreshedToken = null;
+    try
+    {
+      refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+    
+    var ret = { results:_ret, error: error, jwtToken: refreshedToken }; 
+    res.status(200).json(ret);
+  });
   
   //Add Trigger
   app.post('/addTrigger', async (req, res, next) =>
@@ -332,6 +398,65 @@ exports.setApp = function ( app, client )
         console.log(e.message);
     }
 
+    var ret = {error: error, jwtToken: refreshedToken };
+    res.status(200).json(ret);
+  });
+  
+  app.post('/editTriggerName', async (req, res, next) =>
+  {
+    // incoming: userId, triggerName, messageName, contactId(s), jwtToken
+    // outgoing: success or error message
+    
+    var token = require('./createJWT.js');
+    
+    const {userId, triggerName, newTriggerName, messageName, contactId, jwtToken} = req.body;
+    
+    try
+    {
+      if( token.isExpired(jwtToken)){
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+        
+    var error = '';
+
+    // if newTriggerName already exists for that user, error
+    const results = await Users.find({TriggerName: newTriggerName});
+
+    if (results.length != 0)
+    {
+      error = "This Trigger Name is taken";
+      var ret = { error: error };
+      res.status(200).json(ret);
+      return;
+    }
+    
+    try
+    {
+      const editTrigger = await Triggers.findOneAndUpdate({UserId:userId}, {TriggerName:triggerName}, {$set: {TriggerName:newTriggerName}});
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
+        
+    var refreshedToken = null;
+    
+    try
+    {
+      refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+    
     var ret = {error: error, jwtToken: refreshedToken };
     res.status(200).json(ret);
   });
