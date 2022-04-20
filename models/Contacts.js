@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 //Create Schema
 const ContactsSchema = new Schema({
   ContactId: {
-    type: Number
+    type: Array
   },
   UserId: {
     type: Number,
