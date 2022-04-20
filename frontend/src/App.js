@@ -7,7 +7,8 @@ import ContactsPage from './pages/ContactsPage';
 import SwitchesPage from "./pages/SwitchesPage";
 import SettingsPage from "./pages/SettingsPage";
 import MessageContextProvider from './components/messages/context/MessageContext';
-import ContactContextProvider from './components/contacts/context/ContactContext'
+import ContactContextProvider from './components/contacts/context/ContactContext';
+import SwitchContextProvider from './components/switches/contexts/SwitchContext';
 
 function App() {
 
@@ -22,11 +23,13 @@ function App() {
             <Route path="/Register" exact>
                 <RegisterPage />
             </Route>
-
+    
+            <SwitchContextProvider>
             <Route path="/Switches" exact>
               <SwitchesPage />
             </Route>
-
+            <SwitchContextProvider>
+    
             <Route path="/Settings" exact>
               <SettingsPage />
             </Route>
