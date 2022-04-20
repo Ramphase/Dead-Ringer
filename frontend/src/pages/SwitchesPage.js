@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from '../components/navbar/Navbar'
-import Switches from '../components/Switches';
+import Switches from '../components/switches/SwitchesComponent';
 
 
 const SwitchesPage = () => {
