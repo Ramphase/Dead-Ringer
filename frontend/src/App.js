@@ -28,7 +28,7 @@ function App() {
             <Route path="/Switches" exact>
               <SwitchesPage />
             </Route>
-            <SwitchContextProvider>
+            </SwitchContextProvider>
     
             <Route path="/Settings" exact>
               <SettingsPage />
