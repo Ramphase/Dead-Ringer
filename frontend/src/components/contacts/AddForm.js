@@ -9,18 +9,18 @@ const AddForm = () =>{
     const {addContact} = useContext(ContactContext);
 
     const [newContact, setNewContact] = useState({
-        name:"", email:"", phone:""
+        firstName:"", lastName:"", email:"", phone:""
     });
 
     const onInputChange = (e) => {
         setNewContact({...newContact,[e.target.name]: e.target.value})
     }
 
-    const {name, email, phone} = newContact;
+    const {firstName, lastName, email, phone} = newContact;
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        addContact(name, email, phone);
+        addContact(firstName, lastName, email, phone);
     }
 
      return (
@@ -29,9 +29,20 @@ const AddForm = () =>{
             <Form.Group>
                 <Form.Control
                     type="text"
-                    placeholder="Name"
-                    name="name"
-                    value={name}
+                    placeholder="First name"
+                    name="firstName"
+                    value={firstName}
+                    className="mb-2 mt-1"
+                    onChange = { (e) => onInputChange(e)}
+                    required
+                />
+            </Form.Group>
+            <Form.Group>
+                <Form.Control
+                    type="text"
+                    placeholder="Last name"
+                    name="lastName"
+                    value={lastName}
                     className="mb-2 mt-1"
                     onChange = { (e) => onInputChange(e)}
                     required

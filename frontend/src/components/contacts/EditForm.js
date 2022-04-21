@@ -6,13 +6,14 @@ const EditForm = ({theContact}) =>{
 
     const id = theContact.id;
 
-    const [name, setName] = useState(theContact.name);
+    const [firstName, setFirstName] = useState(theContact.firstName);
+    const [lastName, setLastName] = useState(theContact.lastName);
     const [email, setEmail] = useState(theContact.email);
     const [phone, setPhone] = useState(theContact.phone);
 
     const {updateContact} = useContext(ContactContext);
 
-    const updatedContact = {id, name, email, phone}
+    const updatedContact = {id, firstName, lastName, email, phone}
 
     const handleSubmit = (e) => {
         e.preventDefault(); 
@@ -23,12 +24,24 @@ const EditForm = ({theContact}) =>{
 
         <Form onSubmit={handleSubmit}>
             <Form.Group>
-            <Form.Control
+                <Form.Control
                     type="text"
-                    placeholder="Name"
-                    name="name"
-                    value={name}
-                    onChange = { (e) => setName(e.target.value)}
+                    placeholder="First name"
+                    name="firstName"
+                    value={firstName}
+                    className="mb-2 mt-1"
+                    onChange = { (e) => setFirstName(e.target.value)}
+                    required
+                />
+            </Form.Group>
+            <Form.Group>
+                <Form.Control
+                    type="text"
+                    placeholder="Last name"
+                    name="lastName"
+                    value={lastName}
+                    className="mb-2 mt-1"
+                    onChange = { (e) => setLastName(e.target.value)}
                     required
                 />
             </Form.Group>

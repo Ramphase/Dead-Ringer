@@ -54,23 +54,25 @@ const ContactsList = () =>
             Contacts Updated Succefully!
           </Alert>
   
-              <table className="table table-striped table-hover">
+            <table className="table table-striped table-hover">
               <thead>
-                  <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                 </tr>
-               </thead>
+                <tr>
+                  <th>First</th>
+                  <th>Last</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                </tr>
+              </thead>
               <tbody>
               {
-                currentContacts.map(contact => (
-                <tr key={contact.id}>
-                  <Contact contact={contact} />
-                </tr>
+                currentContacts.map(contact => 
+                (
+                  <tr key={contact.id}>
+                   <Contact contact={contact} />
+                  </tr>
                 ))  
-             }
-             </tbody>
+              }
+               </tbody>
             </table>
 
             <div>

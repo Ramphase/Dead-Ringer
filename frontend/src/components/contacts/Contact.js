@@ -23,7 +23,8 @@ const Contact = ({contact}) => {
             <head>
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
             </head>
-            <td>{contact.name}</td>
+            <td>{contact.firstName}</td>
+            <td>{contact.lastName}</td>
             <td>{contact.email}</td>
             <td>{contact.phone}</td>
             <td>
@@ -60,6 +61,7 @@ const Contact = ({contact}) => {
             <EditForm theContact={contact} />
         </Modal.Body>
         <Modal.Footer>
+            
                 <Button variant="secondary" onClick={handleClose}>
                     Close Button
                 </Button>

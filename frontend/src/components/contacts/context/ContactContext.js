@@ -6,7 +6,7 @@ export const ContactContext = createContext()
 const ContactContextProvider  = (props) => {
 
     const [contacts, setContacts] = useState([
-        {id:uuidv4(), name:"", email:"", phone:""},
+        {id:uuidv4(), firstName:"",lastName:"", email:"", phone:""},
 ])
 
 useEffect(()=> {
@@ -23,8 +23,8 @@ const sortedContacts = contacts.sort((a,b)=>(a.name < b.name ? -1 : 1));
 
 
 
-const addContact = (name, email, phone) => {
-    setContacts([...contacts , {id:uuidv4(), name, email, phone}])
+const addContact = (firstName, lastName, email, phone) => {
+    setContacts([...contacts , {id:uuidv4(), firstName, lastName, email, phone}])
 }
 
 const deleteContact = (id) => {
