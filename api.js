@@ -334,12 +334,12 @@ exports.setApp = function ( app, client )
   //Add Trigger
   app.post('/addTrigger', async (req, res, next) =>
   {
-    // incoming: userId, triggerName, messageName, contactId(s) Ex: [4,6,19], jwtToken
+    // incoming: userId, triggerName, messageName, contactId(s) Ex: [4,6,19], time, jwtToken
     // outgoing: success or error message
 
     var token = require('./createJWT.js');
 
-    const {userId, triggerName, messageName, contactId, jwtToken} = req.body;
+    const {userId, triggerName, messageName, contactId, time, jwtToken} = req.body;
 
     //Gets the message text from the recieved message name
     const msgResults = await Messages.find({UserId: userId, MessageName: messageName});
@@ -351,7 +351,7 @@ exports.setApp = function ( app, client )
       return;
     }
 
-    const newTrigger = {UserId:userId, TriggerName: triggerName, Message: msgResults[0].Text, Contact: contactId};
+    const newTrigger = {UserId:userId, TriggerName: triggerName, Message: msgResults[0].Text, Contact: contactId, Time: time};
 
     try
     {
