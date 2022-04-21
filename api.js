@@ -219,9 +219,10 @@ exports.setApp = function ( app, client )
     res.status(200).json(ret);
   });
 
+  //Edit Message
   app.post('/editMessage', async (req, res, next) =>
   {
-    // incoming: userId, messageName, text, jwtToken
+    // incoming: userId, messageName, newMessageName,text, jwtToken
     // outgoing: success or error message
     
     var token = require('./createJWT.js');
@@ -242,7 +243,7 @@ exports.setApp = function ( app, client )
     }
 
     // if newMessageName already exists for that user, error
-    const results = await Users.find({MessageName: newMessageName});
+    const results = await Messages.find({MessageName: newMessageName});
 
     if (results.length != 0)
     {
@@ -256,14 +257,7 @@ exports.setApp = function ( app, client )
     
     try
     {
-      if (newMessageName)
-      {
-        const editMessage = await Messages.findOneAndUpdate({UserId:userId}, {MessageName:messageName}, {$set: {MessageName:newMessageName}}, {$set: {Text:text}});
-      }
-      else
-      {
-        const editMessage = await Messages.findOneAndUpdate({UserId:userId}, {MessageName:messageName}, {$set: {Text:text}});
-      }
+      await Messages.findOneAndUpdate({UserId:userId, MessageName: messageName}, {$set: {MessageName:newMessageName}}, {$set: {Text:text}});
     }
     catch(e)
     {
@@ -403,9 +397,10 @@ exports.setApp = function ( app, client )
     res.status(200).json(ret);
   });
   
+  //Edit Trigger Name
   app.post('/editTriggerName', async (req, res, next) =>
   {
-    // incoming: userId, triggerName, messageName, contactId(s), jwtToken
+    // incoming: userId, triggerName, newTriggerName, messageName, contactId(s), jwtToken
     // outgoing: success or error message
     
     var token = require('./createJWT.js');
@@ -428,7 +423,7 @@ exports.setApp = function ( app, client )
     var error = '';
 
     // if newTriggerName already exists for that user, error
-    const results = await Users.find({TriggerName: newTriggerName});
+    const results = await Triggers.find({TriggerName: newTriggerName});
 
     if (results.length != 0)
     {
@@ -440,7 +435,7 @@ exports.setApp = function ( app, client )
     
     try
     {
-      const editTrigger = await Triggers.findOneAndUpdate({UserId:userId}, {TriggerName:triggerName}, {$set: {TriggerName:newTriggerName}});
+      await Triggers.findOneAndUpdate({UserId:userId, TriggerName:triggerName}, {$set: {TriggerName:newTriggerName}});
     }
     catch(e)
     {
@@ -970,7 +965,6 @@ exports.setApp = function ( app, client )
             console.log(e);
             return;
           }
-
           
           var _ret = JSON.parse(JSON.stringify(ret));
       
