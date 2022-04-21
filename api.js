@@ -400,12 +400,12 @@ exports.setApp = function ( app, client )
   //Edit Trigger Name
   app.post('/editTriggerName', async (req, res, next) =>
   {
-    // incoming: userId, triggerName, newTriggerName, messageName, contactId(s), jwtToken
+    // incoming: userId, triggerName, newTriggerName, jwtToken
     // outgoing: success or error message
     
     var token = require('./createJWT.js');
     
-    const {userId, triggerName, newTriggerName, messageName, contactId, jwtToken} = req.body;
+    const {userId, triggerName, newTriggerName, jwtToken} = req.body;
     
     try
     {
