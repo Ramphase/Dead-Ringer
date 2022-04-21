@@ -26,9 +26,6 @@ return (
 		<NavLink to='/Contacts' activeStyle>
 			Contacts
 		</NavLink>
-		<NavLink to='/Settings' activeStyle>
-			Settings
-		</NavLink>
 		<NavBtnLink to='/'>Logout</NavBtnLink>
 		</NavMenu>
 	</Nav>

@@ -5,7 +5,6 @@ import RegisterPage from './pages/RegisterPage';
 import MessagesPage from "./pages/MessagesPage";
 import ContactsPage from './pages/ContactsPage';
 import SwitchesPage from "./pages/SwitchesPage";
-import SettingsPage from "./pages/SettingsPage";
 import MessageContextProvider from './components/messages/context/MessageContext';
 import ContactContextProvider from './components/contacts/context/ContactContext';
 import SwitchContextProvider from './components/switches/contexts/SwitchContext';
@@ -24,14 +23,8 @@ function App() {
                 <RegisterPage />
             </Route>
     
-            <SwitchContextProvider>
             <Route path="/Switches" exact>
               <SwitchesPage />
-            </Route>
-            </SwitchContextProvider>
-    
-            <Route path="/Settings" exact>
-              <SettingsPage />
             </Route>
 
             <Route path="/Contacts" exact>
