@@ -243,6 +243,8 @@ exports.setApp = function ( app, client )
     }
 
     // if newMessageName already exists for that user, error
+    var error = '';
+    
     const results = await Messages.find({MessageName: newMessageName});
 
     if (results.length != 0)
@@ -253,7 +255,7 @@ exports.setApp = function ( app, client )
       return;
     }
         
-    var error = '';
+    
     
     try
     {
