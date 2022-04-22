@@ -6,8 +6,7 @@ import MessagesPage from "./pages/MessagesPage";
 import ContactsPage from './pages/ContactsPage';
 import SwitchesPage from "./pages/SwitchesPage";
 import MessageContextProvider from './components/messages/context/MessageContext';
-import ContactContextProvider from './components/contacts/context/ContactContext';
-import SwitchContextProvider from './components/switches/contexts/SwitchContext';
+
 
 function App() {
 
