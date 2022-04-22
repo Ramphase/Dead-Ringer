@@ -187,13 +187,12 @@ input:focus {
 }
 
 .container {
-  width: 1200px;
+  /*width: 1200px;*/
   margin: 1rem;
   padding: 2rem;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
   border-radius: var(--border-radius);
   background: #ffffff;
-  
 }
 
 .side-by-side {
@@ -273,8 +272,8 @@ Modal-Title {
 
 .innerbox
 {
-   width:1440px; /* or whatever width you want. */
-   max-width:1440px; /* or whatever width you want. */
+   width:80vw; /* or whatever width you want. */
+   max-width:80vw; /* or whatever width you want. */
    display: inline-block;
 }
 
@@ -284,4 +283,18 @@ Modal-Title {
   height: 50px;
   justify-content: 'center';
   align-items: 'center'
+}
+
+.table-title {
+  background-color: rgb(69, 7, 7);
+  text-align: center;
+  padding: 20px;
+}
+
+.table-title h1 {
+  color: white;
+}
+
+.table-title p {
+  color: white;
 }
