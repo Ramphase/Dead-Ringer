@@ -808,6 +808,23 @@ exports.setApp = function ( app, client )
       res.status(200).json(ret);
       return;
     }
+
+    var seconds = results[0].Time;
+    const timeLeft = new Date(seconds * 1000).toISOString().slice(11, 19);
+    
+    var refreshedToken = null;
+    try
+    {
+      refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+  
+    var ret = { time: timeLeft, error: error, jwtToken: refreshedToken };
+    
+    res.status(200).json(ret);
   });
   
   //Execute Trigger
