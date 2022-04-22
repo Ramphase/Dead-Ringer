@@ -775,6 +775,40 @@ exports.setApp = function ( app, client )
     res.status(200).json(ret);
   });
   
+  //Display time left for a trigger
+  app.post('/displayTime', async (req, res, next) => 
+  {
+    // incoming: userId, TriggerName
+    // outgoing: time, error
+  
+    var error = '';
+    var token = require('./createJWT.js');
+  
+    const { userId, triggerName, jwtToken } = req.body;
+
+    try
+    {
+      if( token.isExpired(jwtToken))
+      {
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+    }
+    catch(e)
+    {
+      console.log(e.message);
+    }
+    
+    const results = await Triggers.find({UserId: userId, TriggerName: triggerName});   
+
+    if(results == 0){
+      error = "There has been an error";
+      var ret = { error: error };
+      res.status(200).json(ret);
+      return;
+    }
+  
   //Execute Trigger
   app.post('/executeTrigger', async (req, res, next) => 
     {
