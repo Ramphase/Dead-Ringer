@@ -19,7 +19,7 @@ const MySwitch = ({Switch}) => {
     }, [Switch])
 
     return (
-        <>
+        <>  
             <td>{Switch.name}</td>
             <td>{Switch.contactId}</td>
             <td>{Switch.msgId}</td>

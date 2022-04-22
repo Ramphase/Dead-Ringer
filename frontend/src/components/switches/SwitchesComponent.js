@@ -5,6 +5,7 @@ import MySwitch from './MySwitch';
 import AddForm from './AddForm';
 import Pagination from './Pagination';
 
+
 const SwitchesComponent = () => {
 
     const {sortedSwitches} = useContext(SwitchContext);
@@ -43,21 +44,17 @@ const SwitchesComponent = () => {
 
     return (
     <>
+    <div className="innerbox">
     <div className="table-title">
-        <div className="row">
-            <div className="col-sm-6">
-                <h2>Manage <b>Switches</b></h2>
-            </div>
-            <div className="col-sm-6">
-                <Button onClick={handleShow} className="btn btn-success" data-toggle="modal"><i className="material-icons">&#xE147;</i> <span>Add New Switch</span></Button>					
-            </div>
-        </div>
-    </div>
-
+        <h1>Manage | Switches</h1>
+        <p>Create and customize your dead man switches by using the option buttons below.
+            You can quickly activate and deactivate them here too. </p>
+   
     <Alert show={showAlert} variant="success">
         Switch List Updated Succefully!
     </Alert>
 
+    <div className='container'>
     <table className="table table-striped table-hover">
         <thead>
             <tr>
@@ -82,10 +79,16 @@ const SwitchesComponent = () => {
         </tbody>
     </table>
 
+            <div>
+                <Button onClick={handleShow} className="button mt-3 mb-4" data-toggle="modal"><span>Create New Switch</span></Button>					
+            </div>
+
     <Pagination pages = {totalPagesNum}
                 setCurrentPage={setCurrentPage}
                 currentSwitches ={currentSwitches}
                 sortedSwitches = {sortedSwitches} />
+    </div>
+</div>
 
     <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -102,6 +105,7 @@ const SwitchesComponent = () => {
                 </Button>
         </Modal.Footer>
     </Modal>
+    </div>
     </>
     )
 }
