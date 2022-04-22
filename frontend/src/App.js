@@ -22,15 +22,19 @@ function App() {
             <Route path="/Register" exact>
                 <RegisterPage />
             </Route>
-    
+
+            <SwitchContextProvider>
             <Route path="/Switches" exact>
               <SwitchesPage />
             </Route>
-
+            </SwitchContextProvider>
+    
+            <ContactContextProvider>
             <Route path="/Contacts" exact>
               <ContactsPage />
             </Route>
-
+            </ContactContextProvider>
+    
             <MessageContextProvider>
             <Route path="/Messages" exact>
               <MessagesPage />
