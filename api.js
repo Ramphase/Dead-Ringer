@@ -808,6 +808,7 @@ exports.setApp = function ( app, client )
       res.status(200).json(ret);
       return;
     }
+  });
   
   //Execute Trigger
   app.post('/executeTrigger', async (req, res, next) => 
