@@ -621,7 +621,7 @@ exports.setApp = function ( app, client )
   //Delete Contact
   app.post('/deleteContact', async (req, res, next) =>
   {
-    // incoming: contactId, userId
+    // incoming: contactId, userId, jwtToken
     // outgoing: success or error message
 
     var token = require('./createJWT.js');
