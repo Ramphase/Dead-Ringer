@@ -46,7 +46,7 @@ const SwitchesComponent = () => {
     <>
     <div className="innerbox">
     <div className="table-title">
-        <h1>Manage | Switches</h1>
+        <h1>Dead Ringer | Switches</h1>
         <p>Create and customize your dead man switches by using the option buttons below.
             You can quickly activate and deactivate them here too. </p>
    
