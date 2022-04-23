@@ -254,8 +254,6 @@ exports.setApp = function ( app, client )
       res.status(200).json(ret);
       return;
     }
-        
-    
     
     try
     {
@@ -280,6 +278,65 @@ exports.setApp = function ( app, client )
     var ret = {error: error, jwtToken: refreshedToken};
     res.status(200).json(ret);
   });
+  
+  //Delete Message
+  app.post('/deleteMessage', async (req, res, next) =>
+  {
+    // incoming: userId, messageName, jwtToken
+    // outgoing: success or error message
+
+    var token = require('./createJWT.js');
+
+    const {userId, messageName, jwtToken} = req.body;
+    
+    try
+    {
+      if( token.isExpired(jwtToken)){
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+    
+    var error = '';
+
+    const results = await Messages.find({UserId: userId, MessageName: messageName});
+
+    if (results.length == 0)
+    {
+      error = "This message does not exist";
+      var ret = { error: error };
+      res.status(200).json(ret);
+      return;
+    }
+
+    try
+    {
+      await Triggers.find({UserId: userId, MessageName: messageName}).remove().exec();
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
+    
+    var refreshedToken = null;
+    
+    try
+    {
+        refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+    
+    var ret = { error: error, jwtToken: refreshedToken };
+    res.status(200).json(ret);
+  });  
   
   //Display Messages
   app.post('/displayMessages', async (req, res, next) =>
