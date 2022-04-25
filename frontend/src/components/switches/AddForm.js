@@ -13,11 +13,8 @@ const AddForm = () =>{
 
     var myMessages = [];
     const myContacts = [];
-
-     const getMessages = async event => {
-        event.preventDefault();
         
-        var obj = {userId:userID.value,jwtToken:userToken.vlaue};
+        var obj = {userId:userID,jwtToken:userToken};
         var js = JSON.stringify(obj);
         
         var config =  
@@ -49,7 +46,7 @@ const AddForm = () =>{
             {
                 console.log(error);
             }); 
-     }
+     
 
 
 
@@ -102,7 +99,7 @@ const AddForm = () =>{
                 <Form.Select
                     placeholder="MsgId"
                     name="msgId"
-                    onChange={(e) => {onInputChange(e); getMessages()}} 
+                    onChange={(e) => {onInputChange(e)}} 
                 >
                 {   
                     myMessages.map(msg => (
