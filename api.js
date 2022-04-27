@@ -602,7 +602,7 @@ exports.setApp = function ( app, client )
     
     var _search = search.trim();
     //Search is caps sensitive right now for some reason?
-    const results = await Triggers.find({UserId: userId, TriggerName: { $regex: _search + '.*', $options: 'r' } });   
+    const results = await Triggers.find({UserId: userId, TriggerName: { $regex: _search + '.*', $options: 'i' } }); // changed 'r' to 'i'  
     
     var _ret = [];
     for( var i=0; i<results.length; i++ )
@@ -826,7 +826,7 @@ exports.setApp = function ( app, client )
     }
     
     var _search = search.trim();
-    const results = await Contacts.find({UserId: userId, FirstName: { $regex: _search + '.*', $options: 'r' } });   
+    const results = await Contacts.find({UserId: userId, FirstName: { $regex: _search + '.*', $options: 'i' } }); // changed 'r' to 'i'  
     
     var _ret = [];
     for( var i=0; i<results.length; i++ )
