@@ -826,7 +826,15 @@ exports.setApp = function ( app, client )
     }
     
     var _search = search.trim();
-    const results = await Contacts.find({UserId: userId, FirstName: { $regex: _search + '.*', $options: 'i' } }); // changed 'r' to 'i'  
+    // const results = await Contacts.find({UserId: userId, FirstName: { $regex: _search + '.*', $options: 'r' } });
+    const results = await Contacts.find({
+                                         {UserId: userId},
+                                         $or: [
+                                           {FirstName: { $regex: _search + '.*', $options: 'i' }},
+                                           {LastName: { $regex: _search + '.*', $options: 'i' }},
+                                           {Email: { $regex: _search + '.*', $options: 'i' }}                                          
+                                         ]
+                                        }); // changed 'r' to 'i'  
     
     var _ret = [];
     for( var i=0; i<results.length; i++ )
