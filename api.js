@@ -677,6 +677,56 @@ exports.setApp = function ( app, client )
     res.status(200).json(ret);
   });
   
+  //Get ContactId
+  app.post('/getContactId', async (req, res, next) =>
+  {
+    // incoming: userId, firstName, lastName, email, jwtToken
+    // outgoing: success or error message
+
+    var token = require('./createJWT.js');
+
+    const {userId, firstName, lastName, email, jwtToken} = req.body;
+    
+    try
+    {
+      if( token.isExpired(jwtToken)){
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+    
+    var error = '';
+
+    const results = await Contacts.find({UserId: userId, FirstName: firstName, LastName: lastName, Email: email});
+
+    if (results.length == 0)
+    {
+      error = "This contact does not exist";
+      var ret = { error: error };
+      res.status(200).json(ret);
+      return;
+    }
+    
+    var refreshedToken = null;
+    
+    try
+    {
+        refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+    
+    var ret = { contactId: results[0].ContactId,error: error, jwtToken: refreshedToken };
+    res.status(200).json(ret);
+  });
+  
   //Edit Contact
   app.post('/editContact', async (req, res, next) =>
   {
