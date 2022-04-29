@@ -828,7 +828,7 @@ exports.setApp = function ( app, client )
     var _search = search.trim();
     // const results = await Contacts.find({UserId: userId, FirstName: { $regex: _search + '.*', $options: 'r' } });
     const results = await Contacts.find({
-                                         {UserId: userId},
+                                         UserId: userId,
                                          $or: [
                                            {FirstName: { $regex: _search + '.*', $options: 'i' }},
                                            {LastName: { $regex: _search + '.*', $options: 'i' }},
