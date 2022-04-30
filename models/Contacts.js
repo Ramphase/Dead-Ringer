@@ -2,9 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 //Create Schema
 const ContactsSchema = new Schema({
-  ContactId: {
-    type: Array
-  },
   UserId: {
     type: Number,
     required: true
