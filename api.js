@@ -162,7 +162,7 @@ exports.setApp = function ( app, client )
   app.post('/addMessage', async (req, res, next) =>
   {
     // incoming: userId, messageName, text, jwtToken
-    // outgoing: success or error message
+    // outgoing: success (messageId) or error message
   
     var token = require('./createJWT.js');
   
@@ -215,19 +215,19 @@ exports.setApp = function ( app, client )
       console.log(e.message);
     }
   
-    var ret = {error: error, jwtToken: refreshedToken };
+    var ret = {messageId: message1._id, error: error, jwtToken: refreshedToken };
     res.status(200).json(ret);
   });
 
   //Edit Message
   app.post('/editMessage', async (req, res, next) =>
   {
-    // incoming: userId, messageName, newMessageName,text, jwtToken
+    // incoming: userId, messageId, newMessageName,text, jwtToken
     // outgoing: success or error message
     
     var token = require('./createJWT.js');
     
-    const {userId, messageName, newMessageName, text, jwtToken} = req.body;
+    const {userId, messageId, newMessageName, text, jwtToken} = req.body;
     
     try
     {
@@ -257,7 +257,7 @@ exports.setApp = function ( app, client )
     
     try
     {
-      await Messages.findOneAndUpdate({UserId:userId, MessageName: messageName}, {$set: {MessageName:newMessageName}}, {$set: {Text:text}});
+      await Messages.findOneAndUpdate({UserId:userId, MessageId: messageId}, {$set: {MessageName:newMessageName}}, {$set: {Text:text}});
     }
     catch(e)
     {
@@ -282,12 +282,12 @@ exports.setApp = function ( app, client )
   //Delete Message
   app.post('/deleteMessage', async (req, res, next) =>
   {
-    // incoming: userId, messageName, jwtToken
+    // incoming: userId, messageId, jwtToken
     // outgoing: success or error message
 
     var token = require('./createJWT.js');
 
-    const {userId, messageName, jwtToken} = req.body;
+    const {userId, messageId, jwtToken} = req.body;
     
     try
     {
@@ -304,7 +304,7 @@ exports.setApp = function ( app, client )
     
     var error = '';
 
-    const results = await Messages.find({UserId: userId, MessageName: messageName});
+    const results = await Messages.find({UserId: userId, _id: messageId});
 
     if (results.length == 0)
     {
@@ -316,7 +316,7 @@ exports.setApp = function ( app, client )
 
     try
     {
-      await Triggers.find({UserId: userId, MessageName: messageName}).remove().exec();
+      await Messages.find({UserId: userId, _id: messageId}).remove().exec();
     }
     catch(e)
     {
@@ -367,7 +367,7 @@ exports.setApp = function ( app, client )
     var _ret = [];
     for( var i=0; i<results.length; i++ )
     {
-      _ret.push({MessageName:results[i].MessageName, Text:results[i].Text});
+      _ret.push({MessageId: results[i]._id, MessageName: results[i].MessageName, Text:results[i].Text});
     }
       
     var refreshedToken = null;
@@ -629,7 +629,7 @@ exports.setApp = function ( app, client )
   app.post('/addContact', async (req, res, next) =>
   {
     // incoming: userId, firstName, lastName, email, phoneNumber (not required), jwtToken
-    // outgoing: success or error message
+    // outgoing: success (contactId) or error message
 
     var token = require('./createJWT.js');
 
@@ -673,57 +673,7 @@ exports.setApp = function ( app, client )
         console.log(e.message);
     }
 
-    var ret = {error: error, jwtToken: refreshedToken };
-    res.status(200).json(ret);
-  });
-  
-  //Get ContactId
-  app.post('/getContactId', async (req, res, next) =>
-  {
-    // incoming: userId, firstName, lastName, email, jwtToken
-    // outgoing: success or error message
-
-    var token = require('./createJWT.js');
-
-    const {userId, firstName, lastName, email, jwtToken} = req.body;
-    
-    try
-    {
-      if( token.isExpired(jwtToken)){
-        var r = {error:'The JWT is no longer valid', jwtToken: ''};
-        res.status(200).json(r);
-        return;
-      }
-    }
-    catch(e)
-    {
-        console.log(e.message);
-    }
-    
-    var error = '';
-
-    const results = await Contacts.find({UserId: userId, FirstName: firstName, LastName: lastName, Email: email});
-
-    if (results.length == 0)
-    {
-      error = "This contact does not exist";
-      var ret = { error: error };
-      res.status(200).json(ret);
-      return;
-    }
-    
-    var refreshedToken = null;
-    
-    try
-    {
-        refreshedToken = token.refresh(jwtToken);
-    }
-    catch(e)
-    {
-        console.log(e.message);
-    }
-    
-    var ret = { contactId: results[0].ContactId,error: error, jwtToken: refreshedToken };
+    var ret = {contactId: contact._id, error: error, jwtToken: refreshedToken };
     res.status(200).json(ret);
   });
   
@@ -736,7 +686,7 @@ exports.setApp = function ( app, client )
     var token = require('./createJWT.js');
     
     const {contactId, userId, firstName, lastName, email, phoneNumber, jwtToken} = req.body;
-    const curContact = {ContactId: contactId, UserId: userId};
+    const curContact = {_id: contactId, UserId: userId};
     
     try
     {
@@ -767,7 +717,7 @@ exports.setApp = function ( app, client )
     
     try
     {
-      await Contacts.findOneAndUpdate(curContact, {$set: {FirstName:firstName}}, {$set: {LastName:lastName}}, {$set: {Email:email}}, {$set: {PhoneNumber:phoneNumber}});
+      await Contacts.findOneAndUpdate({_id: contactId}, {$set: {FirstName:firstName}}, {$set: {LastName:lastName}}, {$set: {Email:email}}, {$set: {PhoneNumber:phoneNumber}});
     }
     catch(e)
     {
@@ -798,7 +748,7 @@ exports.setApp = function ( app, client )
     var token = require('./createJWT.js');
 
     const {contactId, userId, jwtToken} = req.body;
-    const curContact = {ContactId: contactId, UserId: userId};
+    const curContact = {_id: contactId, UserId: userId};
     
     try
     {
@@ -889,7 +839,7 @@ exports.setApp = function ( app, client )
     var _ret = [];
     for( var i=0; i<results.length; i++ )
     {
-      _ret.push({contactId: results[i].ContactId, firstName: results[i].FirstName, lastName: results[i].LastName, email: results[i].Email, phoneNumber: results[i].PhoneNumber });
+      _ret.push({contactId: results[i]._id, firstName: results[i].FirstName, lastName: results[i].LastName, email: results[i].Email, phoneNumber: results[i].PhoneNumber });
     }
     
     var refreshedToken = null;
@@ -937,7 +887,7 @@ exports.setApp = function ( app, client )
     var _ret = [];
     for( var i=0; i<results.length; i++ )
     {
-      _ret.push({contactId: results[i].ContactId, firstName: results[i].FirstName, email: results[i].Email, phoneNumber: results[i].PhoneNumber });
+      _ret.push({contactId: results[i]._id, firstName: results[i].FirstName, email: results[i].Email, phoneNumber: results[i].PhoneNumber });
     }
     
     var refreshedToken = null;
