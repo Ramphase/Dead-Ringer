@@ -7,7 +7,8 @@ import Pagination from './Pagination';
 
 
 const ContactsList = () =>
-{  
+{
+
   const {sortedContacts} = useContext(ContactContext);
 
   const [showAlert, setShowAlert] = useState(false);
@@ -67,7 +68,7 @@ const ContactsList = () =>
               {
                 currentContacts.map(contact => 
                 (
-                  <tr key={contact.id}>
+                  <tr name={contact.id} key={contact.id}>
                    <Contact contact={contact} />
                   </tr>
                 ))  

@@ -1,128 +1,125 @@
-import { Form, Button } from "react-bootstrap"
-import {SwitchContext} from './contexts/SwitchContext';
-import React, {useContext, useState} from 'react';
-import axios from 'axios';
+import { Form, Button } from "react-bootstrap";
+import { SwitchContext } from "./contexts/SwitchContext";
+import React, { useContext, useEffect, useState } from "react";
+import { ContactContext } from "../contacts/context/ContactContext";
+import { MessageContext } from "../messages/context/MessageContext";
+import axios from "axios";
 
-const AddForm = () =>{
+const AddForm = () => {
+  const contacts = useContext(ContactContext);
+  const messages = useContext(MessageContext);
+  const { addSwitch } = useContext(SwitchContext);
+  const sortedContacts = contacts.sortedContacts;
+  const sortedMessages = messages.sortedMessages;
 
-    var bp = require('../Path.js');
-    var storage = require('../../tokenStorage.js');
-    
-    var userToken = storage.retrieveToken();
-    var userID = localStorage.getItem('user_data');
+  var bp = require("../Path.js");
+  var storage = require("../../tokenStorage.js");
+  // incoming: userId, triggerName, messageName, contactId(s) Ex: [4,6,19], time, jwtToken
+  var userToken = storage.retrieveToken();
+  var userID = JSON.parse(localStorage.getItem("user_data"));
 
-    var myMessages = [];
-    const myContacts = [];
-        
-        var obj = {userId:userID,jwtToken:userToken};
-        var js = JSON.stringify(obj);
-        
-        var config =  
-        {
-            method: 'post',
-            url: bp.buildPath('displayMessages'),
-            headers:
-            {
-                'Content-Type': 'application/json'
-            },
-            data: js
-        };
-        axios(config)
-            .then(function (response) 
-            {
-                var res = response.data;
-                if (res.error) 
-                {
-                    console.log("ERROR");
-                    /*   setMessage('You have no contacts'); */
-                } else {
-                    var jwt = require('jsonwebtoken');
-                    var ud = jwt.decode(res,{complete:true});
-                    console.log("IT WORKS?");
-                    myMessages = ud.payload.results;
-                }
-            })
-            .catch(function (error) 
-            {
-                console.log(error);
-            }); 
-     
+  const [message, setMessage] = useState("");
 
-
-
-    const {addSwitch} = useContext(SwitchContext);
-
-    const [newSwitch, setNewSwitch] = useState({
-        name:"", contactId:"", msgId:"", timer:""
-    });
-
-    const onInputChange = (e) => {
-        setNewSwitch({...newSwitch,[e.target.name]: e.target.value})
+  const doTrigger = async () => {
+    var obj = {
+      userId: userID.id,
+      triggerName: name,
+      messageName: messages.messageName,
+      contactId: contacts.id,
+      time: timer,
+      jwtToken: userToken,
+    };
+    var js = JSON.stringify(obj);
+    var config = {
+      method: "post",
+      url: bp.buildPath("addTrigger"),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: js,
+    };
+    const response = await axios(config);
+    var res = response.data;
+    if (res.error) {
+      console.log(res.error);
+    } else {
+      console.log("Success");
+      return res.triggerId;
     }
+  };
 
-    const {name, contactId, msgId, timer} = newSwitch;
+  console.log(sortedContacts);
+  console.log(sortedMessages);
+  const [newSwitch, setNewSwitch] = useState({
+    id: "",
+    name: "",
+    contactId: "",
+    msgId: "",
+    timer: "",
+  });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        addSwitch(name, contactId, msgId, timer);
-    }
+  const onInputChange = (e) => {
+    setNewSwitch({ ...newSwitch, [e.target.name]: e.target.value });
+  };
 
-     return (
+  const { id, name, contactId, msgId, timer } = newSwitch;
 
-        <Form onSubmit={handleSubmit}>
-            <Form.Group>
-                <Form.Control
-                    type="text"
-                    placeholder="Name *"
-                    name="name"
-                    value={name}
-                    onChange = { (e) => onInputChange(e)}
-                    required
-                />
-            </Form.Group>
-            <Form.Group>
-                <Form.Select
-                    placeholder="Contact *"
-                    name="contact"
-                    onChange = { (e) => onInputChange(e)}
-                >
-                
-                {/*
-                    myMessages.map(msg => (
-                    <Form.Option value={msg.MessageName}> {msg.MessageName} </Form.Option>
-                    ))
-                    */}
-                
-                </Form.Select>
-            </Form.Group>
-            <Form.Group>
-                <Form.Select
-                    placeholder="MsgId"
-                    name="msgId"
-                    onChange={(e) => {onInputChange(e)}} 
-                >
-                {   
-                    myMessages.map(msg => (
-                    <Form.Option value={msg.MessageName}> {msg.MessageName} </Form.Option>
-                    ))
-                }
-                </Form.Select>
-            </Form.Group>
-            <Form.Group>
-                <Form.Control
-                    type="text"
-                    placeholder="Timer"
-                    name="timer"
-                    value={timer}
-                    onChange = { (e) => onInputChange(e)}
-                />
-            </Form.Group>
-            <Button variant="success" type="submit" block>
-                Add New Switch
-            </Button>
-        </Form>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = doTrigger(e);
+    addSwitch(id, name, contactId, msgId, timer);
+  };
 
-     )
-}
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Form.Group>
+        <Form.Control
+          type="text"
+          placeholder="Name *"
+          name="name"
+          value={name}
+          onChange={(e) => onInputChange(e)}
+          required
+        />
+      </Form.Group>
+      <Form.Group>
+        <Form.Select
+          placeholder="Contact *"
+          name="contact"
+          onChange={(e) => onInputChange(e)}
+        >
+          {sortedContacts.map((contact) => (
+            <option value={contact.firstName}>{contact.firstName}</option>
+          ))}
+        </Form.Select>
+      </Form.Group>
+      <Form.Group>
+        <Form.Select
+          placeholder="MsgId"
+          name="msgId"
+          onChange={(e) => {
+            onInputChange(e);
+          }}
+        >
+          {sortedMessages.map((msg) => (
+            <option value={msg.messageName}>{msg.messageName}</option>
+          ))}
+        </Form.Select>
+      </Form.Group>
+      <Form.Group>
+        <Form.Control
+          type="number"
+          placeholder="Timer"
+          name="timer"
+          value={timer}
+          onChange={(e) => onInputChange(e)}
+        />
+      </Form.Group>
+      <Button variant="success" type="submit" block>
+        Add New Switch
+      </Button>
+    </Form>
+  );
+};
 
 export default AddForm;

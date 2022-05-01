@@ -7,11 +7,10 @@ import ContactsPage from './pages/ContactsPage';
 import SwitchesPage from "./pages/SwitchesPage";
 import MessageContextProvider from './components/messages/context/MessageContext';
 
-
 function App() {
 
   return (
-    <Router >
+    <Router>
 
         <Switch>
             <Route path="/" exact>
@@ -21,19 +20,19 @@ function App() {
             <Route path="/Register" exact>
                 <RegisterPage />
             </Route>
-
+    
             
             <Route path="/Switches" exact>
               <SwitchesPage />
             </Route>
-            
-    
-           
+         
+
+       
             <Route path="/Contacts" exact>
               <ContactsPage />
             </Route>
-          
-    
+           
+
             <MessageContextProvider>
             <Route path="/Messages" exact>
               <MessagesPage />

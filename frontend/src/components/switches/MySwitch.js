@@ -1,67 +1,98 @@
-import React, {useContext, useState, useEffect} from 'react';
-import {SwitchContext} from './contexts/SwitchContext';
-import { Modal, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import EditForm from './EditForm'
+import React, { useContext, useState, useEffect } from "react";
+import { SwitchContext } from "./contexts/SwitchContext";
+import { Modal, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import EditForm from "./EditForm";
+import axios from "axios";
 
+const MySwitch = ({ Switch }) => {
+  var bp = require("../Path.js");
+  var storage = require("../../tokenStorage.js");
+  // incoming: userId, triggerId, jwtToken
+  var userToken = storage.retrieveToken();
+  var userID = JSON.parse(localStorage.getItem("user_data"));
 
+  const [message, setMessage] = useState("");
 
-const MySwitch = ({Switch}) => {
+  const removeTrigger = async () => {
+    var obj = {
+      userId: userID.id,
+      triggerId: Switch.id,
+      jwtToken: userToken,
+    };
+    var js = JSON.stringify(obj);
+    var config = {
+      method: "post",
+      url: bp.buildPath("deleteTrigger"),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: js,
+    };
+    const response = await axios(config);
+    var res = response.data;
+    if (res.error) {
+      console.log(res.error);
+    } else {
+      console.log("Success");
+    }
+  };
 
-    const {deleteSwitch} = useContext(SwitchContext)
+  const { deleteSwitch } = useContext(SwitchContext);
 
-    const [show, setShow] = useState(false);
-    
-    const handleShow = () => setShow(true);
-    const handleClose = () => setShow(false);
+  const [show, setShow] = useState(false);
 
-    useEffect(() => {
-        handleClose()
-    }, [Switch])
+  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
 
-    return (
-        <>  
-            <td>{Switch.name}</td>
-            <td>{Switch.contactId}</td>
-            <td>{Switch.msgId}</td>
-            <td>{Switch.timer}</td>
-            <td>
-                <OverlayTrigger
-                    overlay={
-                        <Tooltip id={`tooltip-top`}>
-                            Edit
-                        </Tooltip>
-                    }>
-                    <button onClick={handleShow}  className="btn text-warning btn-act" data-toggle="modal"><i className="material-icons">&#xE254;</i></button>
-                </OverlayTrigger>
-                <OverlayTrigger
-                    overlay={
-                        <Tooltip id={`tooltip-top`}>
-                            Delete
-                        </Tooltip>
-                    }>
-                    <button onClick={() => deleteSwitch(Switch.id)}  className="btn text-danger btn-act" data-toggle="modal"><i className="material-icons">&#xE872;</i></button>
-                </OverlayTrigger>
-                
-                
-            </td>
+  useEffect(() => {
+    handleClose();
+  }, [Switch]);
 
-            <Modal show={show} onHide={handleClose}>
+  return (
+    <>
+      <td>{Switch.name}</td>
+      <td>{Switch.contactId}</td>
+      <td>{Switch.msgId}</td>
+      <td>{Switch.timer}</td>
+      <td>
+        <OverlayTrigger overlay={<Tooltip id={`tooltip-top`}>Edit</Tooltip>}>
+          <button
+            onClick={handleShow}
+            className="btn text-warning btn-act"
+            data-toggle="modal"
+          >
+            <i className="material-icons">&#xE254;</i>
+          </button>
+        </OverlayTrigger>
+        <OverlayTrigger overlay={<Tooltip id={`tooltip-top`}>Delete</Tooltip>}>
+          <button
+            onClick={() => {
+              removeTrigger();
+              deleteSwitch(Switch.id);
+            }}
+            className="btn text-danger btn-act"
+            data-toggle="modal"
+          >
+            <i className="material-icons">&#xE872;</i>
+          </button>
+        </OverlayTrigger>
+      </td>
+
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-            <Modal.Title>
-                Edit Switch
-            </Modal.Title>
+          <Modal.Title>Edit Switch</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <EditForm theSwitch={Switch} />
+          <EditForm theSwitch={Switch} />
         </Modal.Body>
         <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                    Close Button
-                </Button>
+          <Button variant="secondary" onClick={handleClose}>
+            Close Button
+          </Button>
         </Modal.Footer>
-    </Modal>
-        </>
-    )
-}
+      </Modal>
+    </>
+  );
+};
 
 export default MySwitch;

@@ -43,7 +43,7 @@ export function Login(){
                 var userId = ud.payload.userId;
                 var firstName = ud.payload.firstName;
                 var lastName = ud.payload.lastName;
-                    
+                
                 var user = {firstName:firstName,lastName:lastName,id:userId}
                 localStorage.setItem('user_data', JSON.stringify(user));
                 window.location.href = "/Switches";
