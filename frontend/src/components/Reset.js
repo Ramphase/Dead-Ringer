@@ -2,45 +2,49 @@ import React,{ useState } from 'react';
 import axios from 'axios';
 
 export function Reset(){
+    var bp = require('./Path.js');
+    var storage = require('../tokenStorage.js');
+    var userToken = storage.retrieveToken();
+    var userID = JSON.parse(localStorage.getItem("user_data"));
+
     var login;
     var password;
     var confirmPassword;
-
-    const [message, setMessage] = useState('');
-    
 
     const doReset = async e => {
         e.preventDefault();
 
         var obj = 
-        {
+        {   
+            userId: userID.id,
             login:login.value,
-            password:password.value,
-            confirmPassword:confirmPassword.value
+            password: password.value,
+            jwtToken: userToken,
         };
-
-        if(obj.password !== obj.confirmPassword)
+        var js = JSON.stringify(obj);
+        var config = 
         {
-            setMessage('Passwords do not match');
-            return;
-        }
-
-        const data = {
-            token: this.props.match.params.id,
-            password: this.password,
-            confirmPassword: this.confirmPassword
+            method: 'post',
+            url: bp.buildPath('changePassword'),
+            headers: 
+            {
+                'Content-Type': 'application/json'
+            },
+            data: js
         };
-
-        axios.post('reset', data).then(
-            res=> {
-                console.log(res)
-            }
-        ).catch(
-            err => {
-                console.log(err);
-            }
-        )
+        const response = await axios(config);
+        var res = response.data;
+        if (res.error) {
+        
+            console.log(res.error);
+        } 
+        else {
+            console.log("Success");
+            return res.messageId;
     }
+     
+
+}
     return (
         <section>
             <h2 class="small-title">Reset Password</h2>
