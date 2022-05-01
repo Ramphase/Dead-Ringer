@@ -245,9 +245,9 @@ exports.setApp = function ( app, client )
     // if newMessageName already exists for that user, error
     var error = '';
     
-    const results = await Messages.find({MessageName: newMessageName});
+    const results = await Messages.find({UserId: userId, MessageName: newMessageName});
 
-    if (results.length != 0)
+    if (results.length != 0 && results[0]._id != messageId)
     {
       error = "This Message Name is taken";
       var ret = { error: error };
@@ -257,7 +257,7 @@ exports.setApp = function ( app, client )
     
     try
     {
-      await Messages.findOneAndUpdate({UserId:userId, MessageId: messageId}, {$set: {MessageName:newMessageName}}, {$set: {Text:text}});
+      await Messages.findOneAndUpdate({UserId:userId, MessageId: messageId}, {$set: {MessageName:newMessageName, Text:text}});
     }
     catch(e)
     {
@@ -388,7 +388,7 @@ exports.setApp = function ( app, client )
   app.post('/addTrigger', async (req, res, next) =>
   {
     // incoming: userId, triggerName, messageName, contactId(s) Ex: [4,6,19], time, jwtToken
-    // outgoing: success or error message
+    // outgoing: success (triggerId) or error message
 
     var token = require('./createJWT.js');
 
@@ -452,19 +452,19 @@ exports.setApp = function ( app, client )
         console.log(e.message);
     }
 
-    var ret = {error: error, jwtToken: refreshedToken };
+    var ret = {triggerId: trigger._id, error: error, jwtToken: refreshedToken };
     res.status(200).json(ret);
   });
   
   //Edit Trigger Name
   app.post('/editTriggerName', async (req, res, next) =>
   {
-    // incoming: userId, triggerName, newTriggerName, jwtToken
+    // incoming: userId, triggerId, newTriggerName, jwtToken
     // outgoing: success or error message
     
     var token = require('./createJWT.js');
     
-    const {userId, triggerName, newTriggerName, jwtToken} = req.body;
+    const {userId, triggerId, newTriggerName, jwtToken} = req.body;
     
     try
     {
@@ -482,7 +482,7 @@ exports.setApp = function ( app, client )
     var error = '';
 
     // if newTriggerName already exists for that user, error
-    const results = await Triggers.find({TriggerName: newTriggerName});
+    const results = await Triggers.find({UserId: userId, TriggerName: newTriggerName});
 
     if (results.length != 0)
     {
@@ -494,7 +494,7 @@ exports.setApp = function ( app, client )
     
     try
     {
-      await Triggers.findOneAndUpdate({UserId:userId, TriggerName:triggerName}, {$set: {TriggerName:newTriggerName}});
+      await Triggers.findOneAndUpdate({UserId:userId, _id: triggerId}, {$set: {TriggerName:newTriggerName}});
     }
     catch(e)
     {
@@ -519,12 +519,12 @@ exports.setApp = function ( app, client )
   //Delete Trigger
   app.post('/deleteTrigger', async (req, res, next) =>
   {
-    // incoming: userId, triggerName, jwtToken
+    // incoming: userId, triggerId, jwtToken
     // outgoing: success or error message
 
     var token = require('./createJWT.js');
 
-    const {userId, triggerName, jwtToken} = req.body;
+    const {userId, triggerId, jwtToken} = req.body;
     
     try
     {
@@ -541,7 +541,7 @@ exports.setApp = function ( app, client )
     
     var error = '';
 
-    const results = await Triggers.find({UserId: userId, TriggerName: triggerName});
+    const results = await Triggers.find({UserId: userId, _id: triggerId});
 
     if (results.length == 0)
     {
@@ -553,7 +553,7 @@ exports.setApp = function ( app, client )
 
     try
     {
-      await Triggers.find({UserId: userId, TriggerName: triggerName}).remove().exec();
+      await Triggers.find({UserId: userId, _id: triggerId}).remove().exec();
     }
     catch(e)
     {
@@ -686,7 +686,6 @@ exports.setApp = function ( app, client )
     var token = require('./createJWT.js');
     
     const {contactId, userId, firstName, lastName, email, phoneNumber, jwtToken} = req.body;
-    const curContact = {_id: contactId, UserId: userId};
     
     try
     {
@@ -704,7 +703,7 @@ exports.setApp = function ( app, client )
     // if the contact to be editted cannot be found, error
     var error = '';
 
-    const results = await Contacts.find(curContact);
+    const results = await Contacts.find({UserId: userId, _id: contactId});
 
     if (results.length == 0)
     {
@@ -714,10 +713,9 @@ exports.setApp = function ( app, client )
       return;
     }
 
-    
     try
     {
-      await Contacts.findOneAndUpdate({_id: contactId}, {$set: {FirstName:firstName}}, {$set: {LastName:lastName}}, {$set: {Email:email}}, {$set: {PhoneNumber:phoneNumber}});
+      await Contacts.findOneAndUpdate({UserId: userId, _id: contactId}, {$set: {FirstName: firstName, LastName: lastName, Email: email, PhoneNumber: phoneNumber}});
     }
     catch(e)
     {
@@ -994,12 +992,6 @@ exports.setApp = function ( app, client )
         contactId.push(triggerResult[i].Contact);
       }
       contactId = String(contactId).split(',')
-
-      const _contactId = [];
-      
-      contactId.forEach(str => {
-        _contactId.push(Number(str));
-      });
       
       const message = triggerResult[0].Message;
       const User_Name = userResult[0].FirstName;
@@ -1024,7 +1016,7 @@ exports.setApp = function ( app, client )
       try{
         for(i = 0; i < contactId.length; i++){
 
-          var contactResult = await Contacts.find({ContactId: _contactId[i]});
+          var contactResult = await Contacts.find({_id: contactId[i]});
           
           if (contactResult.length == 0)
           {
@@ -1150,7 +1142,7 @@ exports.setApp = function ( app, client )
           
           var _ret = JSON.parse(JSON.stringify(ret));
       
-          axios.post('https://dead-ringer.herokuapp.com/executeTrigger', { // change route
+          axios.post('http://localhost:5000/executeTrigger', { // change route
             jwtToken: _ret.accessToken,  
             userId: userIdResult[0].UserId, 
             triggerName: triggerResults[i].TriggerName
