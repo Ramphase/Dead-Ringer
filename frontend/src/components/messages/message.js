@@ -61,7 +61,7 @@ const Message = ({ message }) => {
           rel="stylesheet"
         />
       </head>
-      <td>{message.messageName}</td>
+      <td style={{color :"white", fontSize: 20}}>{message.messageName}</td>
       <td>
         <ButtonGroup>
           <OverlayTrigger overlay={<Tooltip id={`tooltip-top`}>Edit</Tooltip>}>

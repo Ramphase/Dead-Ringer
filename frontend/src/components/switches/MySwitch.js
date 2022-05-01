@@ -50,10 +50,10 @@ const MySwitch = ({ Switch }) => {
 
   return (
     <>
-      <td>{Switch.name}</td>
-      <td>{Switch.contactId}</td>
-      <td>{Switch.msgId}</td>
-      <td>{Switch.timer}</td>
+      <td style={{color :"white", fontSize: 20}}>{Switch.name}</td>
+      <td style={{color :"white", fontSize: 20}}>{Switch.contactId}</td>
+      <td style={{color :"white", fontSize: 20}}>{Switch.msgId}</td>
+      <td style={{color :"white", fontSize: 20}}>{Switch.timer}</td>
       <td>
         <OverlayTrigger overlay={<Tooltip id={`tooltip-top`}>Edit</Tooltip>}>
           <button

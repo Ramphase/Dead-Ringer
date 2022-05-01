@@ -59,10 +59,10 @@ const Contact = ({ contact }) => {
           rel="stylesheet"
         />
       </head>
-      <td>{contact.firstName}</td>
-      <td>{contact.lastName}</td>
-      <td>{contact.email}</td>
-      <td>{contact.phone}</td>
+      <td style={{color :"white", fontSize: 20}}>{contact.firstName}</td>
+      <td style={{color :"white", fontSize: 20}}>{contact.lastName}</td>
+      <td style={{color :"white", fontSize: 20}}>{contact.email}</td>
+      <td style={{color :"white", fontSize: 20}}>{contact.phone}</td>
       <td>
         <ButtonGroup>
           <OverlayTrigger overlay={<Tooltip id={`tooltip-top`}>Edit</Tooltip>}>
