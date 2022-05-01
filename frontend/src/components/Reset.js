@@ -7,6 +7,8 @@ export function Reset(){
     var userToken = storage.retrieveToken();
     var userID = JSON.parse(localStorage.getItem("user_data"));
 
+    const [message, setMessage] = useState('');
+
     var login;
     var password;
     var confirmPassword;
