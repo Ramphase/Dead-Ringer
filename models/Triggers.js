@@ -15,7 +15,7 @@ const TriggersSchema = new Schema({
     required: true
   },
   Contact: {
-    type: [Number],
+    type: [String],
     required: true
   },
   Time: {
