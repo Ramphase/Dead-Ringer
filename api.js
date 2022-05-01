@@ -906,13 +906,13 @@ exports.setApp = function ( app, client )
   //Display time left for a trigger
   app.post('/displayTime', async (req, res, next) => 
   {
-    // incoming: userId, TriggerName
+    // incoming: userId, triggerId, jwtToken
     // outgoing: time, error
   
     var error = '';
     var token = require('./createJWT.js');
   
-    const { userId, triggerName, jwtToken } = req.body;
+    const { userId, triggerId, jwtToken } = req.body;
 
     try
     {
@@ -928,7 +928,7 @@ exports.setApp = function ( app, client )
       console.log(e.message);
     }
     
-    const results = await Triggers.find({UserId: userId, TriggerName: triggerName});   
+    const results = await Triggers.find({UserId: userId, _id: triggerId});   
 
     if(results == 0){
       error = "There has been an error";
