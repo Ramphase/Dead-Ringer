@@ -92,16 +92,11 @@ const Message = ({ message }) => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Message</Modal.Title>
+          <Modal.Title className="small-title">Edit Message</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <EditForm theMessage={message} />
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close Button
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

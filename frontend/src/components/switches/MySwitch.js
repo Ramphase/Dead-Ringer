@@ -80,16 +80,11 @@ const MySwitch = ({ Switch }) => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Switch</Modal.Title>
+          <Modal.Title className="small-title">Edit Switch</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <EditForm theSwitch={Switch} />
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close Button
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

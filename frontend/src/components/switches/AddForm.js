@@ -75,17 +75,19 @@ const AddForm = () => {
       <Form.Group>
         <Form.Control
           type="text"
-          placeholder="Name *"
+          placeholder="Name"
           name="name"
           value={name}
+          className="mb-2 mt-1"
           onChange={(e) => onInputChange(e)}
           required
         />
       </Form.Group>
       <Form.Group>
         <Form.Select
-          placeholder="Contact *"
+          placeholder="Contact"
           name="contact"
+          className="mb-2"
           onChange={(e) => onInputChange(e)}
         >
           {sortedContacts.map((contact) => (
@@ -97,6 +99,7 @@ const AddForm = () => {
         <Form.Select
           placeholder="MsgId"
           name="msgId"
+          className="mb-2"
           onChange={(e) => {
             onInputChange(e);
           }}
@@ -115,9 +118,11 @@ const AddForm = () => {
           onChange={(e) => onInputChange(e)}
         />
       </Form.Group>
-      <Button variant="success" type="submit" block>
-        Add New Switch
-      </Button>
+      <div style={{ paddingLeft: 20 }}>
+        <Button className="mt-4 button" type="submit" block>
+          Create Switch
+        </Button>
+      </div>
     </Form>
   );
 };

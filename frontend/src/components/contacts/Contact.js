@@ -93,16 +93,11 @@ const Contact = ({ contact }) => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Contact</Modal.Title>
+          <Modal.Title className="small-title">Edit Contact</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <EditForm theContact={contact} />
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close Button
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

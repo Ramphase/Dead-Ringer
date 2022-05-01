@@ -61,6 +61,7 @@ const EditForm = ({ theSwitch }) => {
           placeholder="Name *"
           name="name"
           value={name}
+          className="mb-2 mt-1"
           onChange={(e) => setName(e.target.value)}
           required
         />
@@ -69,6 +70,7 @@ const EditForm = ({ theSwitch }) => {
         <Form.Select
           placeholder="Contact *"
           name="contact"
+          className="mb-2"
           value={contactId}
           onChange={(e) => setContact(e.target.value)}
           required
@@ -78,6 +80,7 @@ const EditForm = ({ theSwitch }) => {
         <Form.Select
           placeholder="msgId"
           name="msgId"
+          className="mb-2"
           value={msgId}
           onChange={(e) => setMsg(e.target.value)}
         />
@@ -91,9 +94,11 @@ const EditForm = ({ theSwitch }) => {
           onChange={(e) => setTimer(e.target.value)}
         />
       </Form.Group>
-      <Button variant="success" type="submit" block>
-        Edit Switch
-      </Button>
+      <div style={{ paddingLeft: 20 }}>
+        <Button className="mt-4 button" type="submit" block>
+          Edit Switch
+        </Button>
+      </div>
     </Form>
   );
 };

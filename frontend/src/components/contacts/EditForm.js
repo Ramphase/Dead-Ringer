@@ -76,7 +76,7 @@ const EditForm = ({ theContact }) => {
           placeholder="Last name"
           name="lastName"
           value={lastName}
-          className="mb-2 mt-1"
+          className="mb-2"
           onChange={(e) => setLastName(e.target.value)}
           required
         />
@@ -84,9 +84,10 @@ const EditForm = ({ theContact }) => {
       <Form.Group>
         <Form.Control
           type="email"
-          placeholder="Email *"
+          placeholder="Email"
           name="email"
           value={email}
+          className="mb-2"
           onChange={(e) => setEmail(e.target.value)}
           required
         />
@@ -100,9 +101,11 @@ const EditForm = ({ theContact }) => {
           onChange={(e) => setPhone(e.target.value)}
         />
       </Form.Group>
-      <Button variant="success" type="submit" block>
-        Edit Contact
-      </Button>
+      <div style={{ paddingLeft: 20 }}>
+        <Button className="mt-4 button" type="submit" block>
+          Edit Contact
+        </Button>
+      </div>
     </Form>
   );
 };

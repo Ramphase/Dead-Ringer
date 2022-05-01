@@ -18,7 +18,9 @@ const Pagination = ({pages, setCurrentPage, currentMessages, sortedMessages}) =>
 
     return (
         <div className="clearfix">
-        <div className="hint-text">Showing <b>{currentMessages.length}</b> out of <b>{sortedMessages.length}</b> entries</div>
+        <span span style={{color :'white', fontSize: 20}}>
+            <div className="hint-text">Showing <b>{currentMessages.length}</b> out of <b>{sortedMessages.length}</b> entries</div>
+        </span>
         <ul className="pagination">
             <li className={`${currentButton === 1 ? 'page-item disabled' : 'page-item' }`}><a href="#!"
                 onClick = { () => setCurrentButton((prev) => prev === 1 ? prev : prev - 1)}

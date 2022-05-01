@@ -61,6 +61,7 @@ const EditForm = ({ theMessage }) => {
           placeholder="Name"
           name="messageName"
           value={messageName}
+          className="mb-3 mt-1"
           onChange={(e) => setMessageName(e.target.value)}
           required
         />
@@ -75,9 +76,11 @@ const EditForm = ({ theMessage }) => {
           onChange={(e) => setSwitchMessage(e.target.value)}
         />
       </Form.Group>
-      <Button variant="success" type="submit" block>
-        Edit Message
-      </Button>
+      <div style={{ paddingLeft: 20 }}>
+        <Button className="mt-4 button" type="submit" block>
+          Edit Messsage
+        </Button>
+      </div>
     </Form>
   );
 };

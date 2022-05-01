@@ -7,6 +7,7 @@ NavMenu,
 NavBtn,
 NavBtnLink,
 } from './NavbarElements';
+import icon from '../images/icon.png'
 
 
 
@@ -14,8 +15,7 @@ const Navbar = () => {
 return (
 	<>
 	<Nav>
-		<Bars />
-
+		<Bars />	
 		<NavMenu>
 		<NavLink to='/Switches' activeStyle>
 			Switches

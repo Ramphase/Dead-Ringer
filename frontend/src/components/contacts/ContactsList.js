@@ -58,10 +58,10 @@ const ContactsList = () =>
             <table className="table table-striped table-hover">
               <thead>
                 <tr>
-                  <th>First</th>
-                  <th>Last</th>
-                  <th>Email</th>
-                  <th>Phone</th>
+                  <th className="smaller-title">First</th>
+                  <th className="smaller-title">Last</th>
+                  <th className="smaller-title">Email</th>
+                  <th className="smaller-title">Phone</th>
                 </tr>
               </thead>
               <tbody>
@@ -90,7 +90,7 @@ const ContactsList = () =>
           
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title className="title">
+                <Modal.Title className="small-title">
                     Create Contact
                 </Modal.Title>
             </Modal.Header>

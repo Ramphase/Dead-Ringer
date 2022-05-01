@@ -61,11 +61,11 @@ const SwitchesComponent = () => {
             <table className="table table-striped table-hover">
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Contact</th>
-                  <th>Msg</th>
-                  <th>Timer</th>
-                  <th>Actions</th>
+                  <th className="smaller-title">Name</th>
+                  <th className="smaller-title">Contact</th>
+                  <th className="smaller-title">Msg</th>
+                  <th className="smaller-title">Timer</th>
+                  <th className="smaller-title">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -98,16 +98,11 @@ const SwitchesComponent = () => {
 
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Add Switch</Modal.Title>
+            <Modal.Title className="small-title">Add Switch</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <AddForm />
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close Button
-            </Button>
-          </Modal.Footer>
         </Modal>
       </div>
     </>

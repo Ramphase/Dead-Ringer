@@ -59,7 +59,7 @@ const Messages = () =>
               <table className="table table-striped table-hover">
               <thead>
                 <tr>
-                  <th>Message</th>
+                  <th className="smaller-title">Message</th>
                 </tr>
               </thead>
               <tbody>
@@ -85,7 +85,7 @@ const Messages = () =>
         </div>
             <Modal show={show} onHide={handleClose}>
                <Modal.Header closeButton>
-                   <Modal.Title>
+                   <Modal.Title className="small-title">
                        Message
                     </Modal.Title>
                 </Modal.Header>
