@@ -157,6 +157,75 @@ exports.setApp = function ( app, client )
     }
   
   });
+
+    //Forgot Password
+    app.post('/forgotPassword', async(req, res, next) =>{
+
+      const{login, email} = req.body;
+
+      const results = await Users.find({Login: login, Email: email});
+
+      if(results.length == 0){
+        error = "User does not exist";
+        var ret = {error: error };
+        return res.status(200).json(ret);
+      }
+
+      const msg = {
+        from: 'gavinb@knights.ucf.edu',
+        to: email,
+        subject: "Dead Ringer | Password Change",
+        test: `
+          Please click the link below to change your password.
+          https://dead-ringer.herokuapp.com/Reset
+        `,
+        html: `
+          <p>Please click the link below to change your password.</p>
+          <a href="https://dead-ringer.herokuapp.com/Reset">Change your password</a>
+        `
+      }
+
+      try{
+        await sgMail.send(msg);
+  
+        error = "Please check your email.";
+        var ret = {error: error };
+        return res.status(200).json(ret);
+  
+      } catch(e){
+  
+        error = "Something went wrong.";
+        var ret = {error: error };
+        return res.status(200).json(ret);
+      }
+
+    });
+
+    //Change Password
+    app.post('/changePassword', async(req, res, next) =>{
+      const {password, login} = req.body;
+
+      const results = await Users.find({Login: login});
+
+      if(results.length == 0){
+        error = "Incorrect Login";
+        var ret = {error: error };
+        return res.status(200).json(ret);
+      }
+
+      try
+      {
+        await Users.findOneAndUpdate({Login: login}, {$set: {Password: password}});
+      }
+      catch(e)
+      {
+        error = e.toString();
+      }
+      
+      error = "Success."
+      var ret = {error: error};
+      res.status(200).json(ret);
+    });
   
   //Add Message
   app.post('/addMessage', async (req, res, next) =>
