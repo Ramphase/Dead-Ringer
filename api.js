@@ -1142,7 +1142,7 @@ exports.setApp = function ( app, client )
           
           var _ret = JSON.parse(JSON.stringify(ret));
       
-          axios.post('http://localhost:5000/executeTrigger', { // change route
+          axios.post('https://dead-ringer.herokuapp.com/executeTrigger', { // change route
             jwtToken: _ret.accessToken,  
             userId: userIdResult[0].UserId, 
             triggerName: triggerResults[i].TriggerName
