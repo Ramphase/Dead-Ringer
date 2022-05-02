@@ -16,7 +16,7 @@ export function Reset(){
     const doReset = async e => {
         e.preventDefault();
 
-        if(password !== confirmPassword){
+        if(password.value !== confirmPassword.value){
             setMessage("Passwords do not match");
             return;
         }
