@@ -16,6 +16,11 @@ export function Reset(){
     const doReset = async e => {
         e.preventDefault();
 
+        if(password !== confirmPassword){
+            setMessage("Passwords do not match");
+            return;
+        }
+
         var obj = 
         {   
             userId: userID.id,
@@ -37,11 +42,11 @@ export function Reset(){
         const response = await axios(config);
         var res = response.data;
         if (res.error) {
-        
+            
             console.log(res.error);
         } 
         else {
-            console.log("Success");
+            setMessage("Success");
             return res.messageId;
     }
      
@@ -55,7 +60,7 @@ export function Reset(){
                 <input type="text" id="login" placeholder="Enter Username" ref={(c) => login = c} className="mb-3 mt-4"/> 
                 <input type="password" id="password" placeholder="Enter New Password" ref={(c) => password = c} className="mb-3"/> 
                 <input type="password" id="confirmPassword" placeholder="Confirm Password" ref={(c) => confirmPassword = c} className="mb-3"/> 
-                <span id="resetResult">{message}</span>
+                <span id="resetResult" style={{color :'white'}}>{message}</span>
 
                 <button className="mt-3" onSubmit={doReset}>Submit</button>
             </form>

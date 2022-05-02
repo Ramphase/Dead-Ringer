@@ -4,22 +4,18 @@ import {Link} from 'react-router-dom';
 
 export function Forgot(){
     var bp = require('./Path.js');
-    var storage = require('../tokenStorage.js');
-    var userToken = storage.retrieveToken();
-    var userID = JSON.parse(localStorage.getItem("user_data"));
-
+    const [message, setMessage] = useState('');
+    
     var email;
     var login;
 
-    const doReset = async e => {
+    const doForgot = async e => {
         e.preventDefault();
 
         var obj = 
         {   
-            userId: userID.id,
-            login:login.value,
-            email: email.value,
-            jwtToken: userToken,
+            login: login.value,
+            email: email.value
         };
         var js = JSON.stringify(obj);
         var config = 
@@ -35,11 +31,11 @@ export function Forgot(){
         const response = await axios(config);
         var res = response.data;
         if (res.error) {
-        
+            setMessage(res.error);
             console.log(res.error);
         } 
         else {
-            console.log("Success");
+            setMessage("Success");
             return res.messageId;
     }
      
@@ -49,10 +45,12 @@ export function Forgot(){
         <section>
             <h2 class="small-title">Forgot Password</h2>
 
-                <input type="email" id="email" placeholder="Enter Email" ref={(c) => login = c} className="mb-3 mt-4"/>
-                <input type="text" id="login" placeholder="Enter Username" ref={(c) => email = c} className="mb-3"/>  
-                <button className="mt-4 mb-3" onSubmit={doReset}>Submit</button>
-
+            <form onSubmit={doForgot}>
+                <input type="text" id="login" placeholder="Enter Login" ref={(c) => login = c} className="mb-3"/>  
+                <input type="email" id="email" placeholder="Enter Email" ref={(c) => email = c} className="mb-3 mt-4"/>
+                <button className="mt-4 mb-3" onSubmit={doForgot}>Submit</button>
+                <span id="forgotResult" style={{color :'white'}}>{message}</span>
+            </form>
                 <span className="link text-center">
                     <Link to="/" variant = "body2">
                     <span span style={{color :'white', fontSize: 15}}>
