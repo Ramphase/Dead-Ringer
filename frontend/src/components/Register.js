@@ -115,7 +115,7 @@ export function Register() {
                     <input type="password" id="password" placeholder="Password" className="mb-3" ref={(c) => registerPassword = c}/>
                     <input type="password" id="confirm_pwd" placeholder="Confirm password" ref={(c) => confirmPassword = c}/>
 
-                    <span id="registerResult">{message}</span>
+                    <span id="registerResult" style={{color :'white'}}>{message}</span>
 
                     <button className="mt-3" onSubmit={doRegister}>Sign Up</button>
                 </form>
