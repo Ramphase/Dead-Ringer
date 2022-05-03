@@ -20,7 +20,11 @@ const Contact = ({ contact }) => {
   const [message, setMessage] = useState("");
 
   const removeContact = async (event) => {
-    var obj = { contactId: contact.id, userId: userID.id, jwtToken: userToken };
+    var obj = {
+      contactId: contact.contactId,
+      userId: userID.id,
+      jwtToken: userToken,
+    };
     var js = JSON.stringify(obj);
     var config = {
       method: "post",
@@ -59,10 +63,10 @@ const Contact = ({ contact }) => {
           rel="stylesheet"
         />
       </head>
-      <td style={{color :"white", fontSize: 20}}>{contact.firstName}</td>
-      <td style={{color :"white", fontSize: 20}}>{contact.lastName}</td>
-      <td style={{color :"white", fontSize: 20}}>{contact.email}</td>
-      <td style={{color :"white", fontSize: 20}}>{contact.phone}</td>
+      <td style={{ color: "white", fontSize: 20 }}>{contact.firstName}</td>
+      <td style={{ color: "white", fontSize: 20 }}>{contact.lastName}</td>
+      <td style={{ color: "white", fontSize: 20 }}>{contact.email}</td>
+      <td style={{ color: "white", fontSize: 20 }}>{contact.phoneNumber}</td>
       <td>
         <ButtonGroup>
           <OverlayTrigger overlay={<Tooltip id={`tooltip-top`}>Edit</Tooltip>}>
@@ -80,7 +84,7 @@ const Contact = ({ contact }) => {
             <button
               onClick={() => {
                 removeContact();
-                deleteContact(contact.id);
+                deleteContact(contact.contactId);
               }}
               className="btn text-danger btn-act"
               data-toggle="modal"
@@ -92,12 +96,15 @@ const Contact = ({ contact }) => {
       </td>
 
       <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title className="small-title">Edit Contact</Modal.Title>
-        </Modal.Header>
+        <Modal.Header closeButton>className="small-title"</Modal.Header>
         <Modal.Body>
           <EditForm theContact={contact} />
         </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close Button
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

@@ -24,12 +24,13 @@ const AddForm = () => {
     var obj = {
       userId: userID.id,
       triggerName: name,
-      messageName: messages.messageName,
-      contactId: contacts.id,
+      messageName: msgId,
+      contactId: contactId,
       time: timer,
       jwtToken: userToken,
     };
     var js = JSON.stringify(obj);
+    console.log(js);
     var config = {
       method: "post",
       url: bp.buildPath("addTrigger"),
@@ -48,25 +49,33 @@ const AddForm = () => {
     }
   };
 
-  console.log(sortedContacts);
+  //console.log(sortedContacts);
   console.log(sortedMessages);
   const [newSwitch, setNewSwitch] = useState({
-    id: "",
     name: "",
-    contactId: "",
-    msgId: "",
+    contactId: -1,
+    msgId: -1,
     timer: "",
   });
 
   const onInputChange = (e) => {
+    e.preventDefault();
+    //console.log(e.target.value);
     setNewSwitch({ ...newSwitch, [e.target.name]: e.target.value });
+    console.log(newSwitch);
   };
 
-  const { id, name, contactId, msgId, timer } = newSwitch;
+  const [value, setValue] = React.useState(new Date());
+  const { name, contactId, msgId, timer } = newSwitch;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const id = doTrigger(e);
+    if (contactId == -1 || msgId == -1) {
+      setMessage("No work");
+      return;
+    }
+    const id = await doTrigger(e);
+    console.log(timer);
     addSwitch(id, name, contactId, msgId, timer);
   };
 
@@ -77,21 +86,25 @@ const AddForm = () => {
           type="text"
           placeholder="Name"
           name="name"
-          value={name}
-          className="mb-2 mt-1"
-          onChange={(e) => onInputChange(e)}
+          value={newSwitch.name}
+          onChange={onInputChange}
           required
         />
       </Form.Group>
       <Form.Group>
         <Form.Select
           placeholder="Contact"
-          name="contact"
+          name="contactId"
+          value={contactId}
           className="mb-2"
-          onChange={(e) => onInputChange(e)}
+          onChange={onInputChange}
+          required
         >
+          <option disabled value={-1}>
+            Select a contact
+          </option>
           {sortedContacts.map((contact) => (
-            <option value={contact.firstName}>{contact.firstName}</option>
+            <option value={contact.contactId}>{contact.firstName}</option>
           ))}
         </Form.Select>
       </Form.Group>
@@ -99,11 +112,14 @@ const AddForm = () => {
         <Form.Select
           placeholder="MsgId"
           name="msgId"
+          value={msgId}
           className="mb-2"
-          onChange={(e) => {
-            onInputChange(e);
-          }}
+          onChange={onInputChange}
+          required
         >
+          <option disabled value={-1}>
+            Select a message
+          </option>
           {sortedMessages.map((msg) => (
             <option value={msg.messageName}>{msg.messageName}</option>
           ))}
@@ -112,10 +128,11 @@ const AddForm = () => {
       <Form.Group>
         <Form.Control
           type="number"
-          placeholder="Timer"
+          placeholder="Minutes"
           name="timer"
           value={timer}
-          onChange={(e) => onInputChange(e)}
+          onChange={onInputChange}
+          required
         />
       </Form.Group>
       <div style={{ paddingLeft: 20 }}>

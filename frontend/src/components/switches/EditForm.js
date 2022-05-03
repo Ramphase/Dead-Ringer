@@ -2,8 +2,15 @@ import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 import { SwitchContext } from "./contexts/SwitchContext";
 import React, { useContext, useState } from "react";
+import { ContactContext } from "../contacts/context/ContactContext";
+import { MessageContext } from "../messages/context/MessageContext";
 
 const EditForm = ({ theSwitch }) => {
+  const contacts = useContext(ContactContext);
+  const messages = useContext(MessageContext);
+  const sortedContacts = contacts.sortedContacts;
+  const sortedMessages = messages.sortedMessages;
+
   var bp = require("../Path.js");
   var storage = require("../../tokenStorage.js");
   // incoming: userId, triggerId, newTriggerName, jwtToken
@@ -22,7 +29,7 @@ const EditForm = ({ theSwitch }) => {
     var js = JSON.stringify(obj);
     var config = {
       method: "post",
-      url: bp.buildPath("editMessage"),
+      url: bp.buildPath("editTriggerName"),
       headers: {
         "Content-Type": "application/json",
       },
@@ -50,6 +57,7 @@ const EditForm = ({ theSwitch }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    changeTriggerName(e);
     updateSwitch(id, updatedSwitch);
   };
 
@@ -58,7 +66,7 @@ const EditForm = ({ theSwitch }) => {
       <Form.Group>
         <Form.Control
           type="text"
-          placeholder="Name *"
+          placeholder="Name"
           name="name"
           value={name}
           className="mb-2 mt-1"
@@ -68,13 +76,18 @@ const EditForm = ({ theSwitch }) => {
       </Form.Group>
       <Form.Group>
         <Form.Select
-          placeholder="Contact *"
+          placeholder="Contact"
           name="contact"
           className="mb-2"
           value={contactId}
           onChange={(e) => setContact(e.target.value)}
           required
-        />
+        >
+          <option selected>Select a contact</option>
+          {sortedContacts.map((contact) => (
+            <option value={contactId}>{contact.firstName}</option>
+          ))}
+        </Form.Select>
       </Form.Group>
       <Form.Group>
         <Form.Select
@@ -83,12 +96,17 @@ const EditForm = ({ theSwitch }) => {
           className="mb-2"
           value={msgId}
           onChange={(e) => setMsg(e.target.value)}
-        />
+        >
+          <option selected>Select a message</option>
+          {sortedMessages.map((msg) => (
+            <option value={msgId}>{msg.messageName}</option>
+          ))}
+        </Form.Select>
       </Form.Group>
       <Form.Group>
         <Form.Control
           type="text"
-          placeholder="timer"
+          placeholder="Minutes"
           name="timer"
           value={timer}
           onChange={(e) => setTimer(e.target.value)}

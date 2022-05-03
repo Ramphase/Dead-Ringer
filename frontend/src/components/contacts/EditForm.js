@@ -40,16 +40,16 @@ const EditForm = ({ theContact }) => {
     }
   };
 
-  const id = theContact.id;
+  const id = theContact.contactId;
 
   const [firstName, setFirstName] = useState(theContact.firstName);
   const [lastName, setLastName] = useState(theContact.lastName);
   const [email, setEmail] = useState(theContact.email);
-  const [phone, setPhone] = useState(theContact.phone);
+  const [phone, setPhone] = useState(theContact.phoneNumber);
 
   const { updateContact } = useContext(ContactContext);
 
-  const updatedContact = { id, firstName, lastName, email, phone };
+  const updatedContact = { id, firstName, lastName, email, phoneNumber: phone };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -65,7 +65,7 @@ const EditForm = ({ theContact }) => {
           placeholder="First name"
           name="firstName"
           value={firstName}
-          className="mb-2 mt-1"
+          className="mb-2"
           onChange={(e) => setFirstName(e.target.value)}
           required
         />
@@ -76,7 +76,7 @@ const EditForm = ({ theContact }) => {
           placeholder="Last name"
           name="lastName"
           value={lastName}
-          className="mb-2"
+          className="mb-2 mt-1"
           onChange={(e) => setLastName(e.target.value)}
           required
         />

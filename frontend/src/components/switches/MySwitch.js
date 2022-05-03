@@ -1,8 +1,11 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useMemo } from "react";
 import { SwitchContext } from "./contexts/SwitchContext";
+import { ContactContext } from "../contacts/context/ContactContext";
 import { Modal, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import EditForm from "./EditForm";
 import axios from "axios";
+import Countdown from "react-countdown";
+import { Duration } from "luxon";
 
 const MySwitch = ({ Switch }) => {
   var bp = require("../Path.js");
@@ -10,9 +13,8 @@ const MySwitch = ({ Switch }) => {
   // incoming: userId, triggerId, jwtToken
   var userToken = storage.retrieveToken();
   var userID = JSON.parse(localStorage.getItem("user_data"));
-
+  const startDate = React.useRef(Date.now());
   const [message, setMessage] = useState("");
-
   const removeTrigger = async () => {
     var obj = {
       userId: userID.id,
@@ -38,11 +40,15 @@ const MySwitch = ({ Switch }) => {
   };
 
   const { deleteSwitch } = useContext(SwitchContext);
-
+  const { getContact } = useContext(ContactContext);
   const [show, setShow] = useState(false);
 
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
+
+  let contact = {};
+  console.log(Number.isNaN(Switch.timer));
+  contact = getContact(Switch.contactId);
 
   useEffect(() => {
     handleClose();
@@ -50,10 +56,20 @@ const MySwitch = ({ Switch }) => {
 
   return (
     <>
-      <td style={{color :"white", fontSize: 20}}>{Switch.name}</td>
-      <td style={{color :"white", fontSize: 20}}>{Switch.contactId}</td>
-      <td style={{color :"white", fontSize: 20}}>{Switch.msgId}</td>
-      <td style={{color :"white", fontSize: 20}}>{Switch.timer}</td>
+      <td style={{ color: "white", fontSize: 20 }}>{Switch.name}</td>
+      <td style={{ color: "white", fontSize: 20 }}>
+        {contact ? contact.firstName : ""}
+      </td>
+      <td style={{ color: "white", fontSize: 20 }}>{Switch.msgId}</td>
+      <td style={{ color: "white", fontSize: 20 }}>
+        <Countdown
+          date={
+            startDate.current +
+            Duration.fromMillis(parseInt(Switch.timer) * 60000)
+          }
+          daysInHours={true}
+        />
+      </td>
       <td>
         <OverlayTrigger overlay={<Tooltip id={`tooltip-top`}>Edit</Tooltip>}>
           <button
@@ -85,6 +101,11 @@ const MySwitch = ({ Switch }) => {
         <Modal.Body>
           <EditForm theSwitch={Switch} />
         </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close Button
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

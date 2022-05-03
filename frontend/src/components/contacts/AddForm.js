@@ -69,7 +69,7 @@ const AddForm = () => {
           placeholder="First name"
           name="firstName"
           value={firstName}
-          className="mb-2 mt-1"
+          className="mb-2"
           onChange={(e) => onInputChange(e)}
           required
         />
@@ -80,7 +80,7 @@ const AddForm = () => {
           placeholder="Last name"
           name="lastName"
           value={lastName}
-          className="mb-2"
+          className="mb-2 mt-1"
           onChange={(e) => onInputChange(e)}
           required
         />

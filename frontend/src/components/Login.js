@@ -1,7 +1,6 @@
 import React,{ useState } from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
-import icon from './images/icon.png'
 
 export function Login(){
    
@@ -58,34 +57,28 @@ export function Login(){
     }
     return (
         <section>
-            <h2 class="small-title">Dead Ringer <img src={icon}></img></h2>
+            <h2 class="small-title">Dead Ringer</h2>
 
             <form onSubmit={doLogin}>
-                <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} className="mb-3 mt-4"/> 
+                <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} className="mb-3"/> 
                 <input type="password" id="password" placeholder="Password" ref={(c) => loginPassword = c} />
                 <span id="loginResult">{message}</span>
 
                 <button className="mt-3" onSubmit={doLogin}>Sign In</button>
             </form>
 
-            <span className="link text-center">
+                <p>
+                    <span className="link text-center">
                     <Link to="/Register" variant = "body2">
-                    <span style={{color :"white", fontSize: 15}}>
+                    <span style={{color :"black", fontSize: 15}}>
                         Don't have an account?
                     </span>    
-                    <span span style={{color :'white', fontSize: 15}}>
+                    <span span style={{color :'#4e4187', fontSize: 15}}>
                         &nbsp;Sign up
                     </span>
                         </Link>
                     </span>
-            
-                <span className="link text-center">
-                    <Link to="/Forgot" variant = "body2">
-                    <span span style={{color :'white', fontSize: 15}}>
-                        Forgot Password?
-                    </span>
-                        </Link>
-                </span>
+                </p>
         </section>
     );
 };

@@ -1,13 +1,42 @@
 import React, { createContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 export const ContactContext = createContext();
+var bp = require("../../Path.js");
+var storage = require("../../../tokenStorage.js");
+var userToken = storage.retrieveToken();
+var userID = JSON.parse(localStorage.getItem("user_data"));
 
 const ContactContextProvider = (props) => {
   const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
-    setContacts(JSON.parse(localStorage.getItem("contacts")));
+    var obj = { userId: userID.id, jwtToken: userToken };
+    var js = JSON.stringify(obj);
+    var config = {
+      method: "post",
+      url: bp.buildPath("displayContacts"),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: js,
+    };
+    axios(config).then(function (response) {
+      var res = response.data;
+      console.log(res);
+      if (res.error) {
+        console.log("Failure");
+      } else {
+        console.log("Success");
+        if (res.results.length > 0) {
+          console.log(res.results);
+          setContacts(res.results);
+        } else {
+          console.log("No contacts to display");
+        }
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -16,23 +45,38 @@ const ContactContextProvider = (props) => {
 
   const sortedContacts = contacts.sort((a, b) => (a.name < b.name ? -1 : 1));
 
-  const addContact = (id, firstName, lastName, email, phone) => {
-    setContacts([...contacts, { id, firstName, lastName, email, phone }]);
+  const addContact = (contactId, firstName, lastName, email, phoneNumber) => {
+    setContacts([
+      ...contacts,
+      { contactId, firstName, lastName, email, phoneNumber },
+    ]);
   };
 
-  const deleteContact = (id) => {
-    setContacts(contacts.filter((contact) => contact.id !== id));
+  const deleteContact = (contactId) => {
+    setContacts(contacts.filter((contact) => contact.contactId !== contactId));
   };
 
-  const updateContact = (id, updatedContact) => {
+  const updateContact = (contactId, updatedContact) => {
     setContacts(
-      contacts.map((contact) => (contact.id === id ? updatedContact : contact))
+      contacts.map((contact) =>
+        contact.contactId === contactId ? updatedContact : contact
+      )
     );
+  };
+
+  const getContact = (contactId) => {
+    return contacts.find((contact) => contact.contactId === contactId);
   };
 
   return (
     <ContactContext.Provider
-      value={{ sortedContacts, addContact, deleteContact, updateContact }}
+      value={{
+        sortedContacts,
+        addContact,
+        deleteContact,
+        updateContact,
+        getContact,
+      }}
     >
       {props.children}
     </ContactContext.Provider>

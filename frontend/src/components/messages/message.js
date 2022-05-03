@@ -61,7 +61,7 @@ const Message = ({ message }) => {
           rel="stylesheet"
         />
       </head>
-      <td style={{color :"white", fontSize: 20}}>{message.messageName}</td>
+      <td style={{ color: "white", fontSize: 20 }}>{message.messageName}</td>
       <td>
         <ButtonGroup>
           <OverlayTrigger overlay={<Tooltip id={`tooltip-top`}>Edit</Tooltip>}>
@@ -97,6 +97,11 @@ const Message = ({ message }) => {
         <Modal.Body>
           <EditForm theMessage={message} />
         </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close Button
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

@@ -1,7 +1,6 @@
 import React,{ useState } from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
-import icon from './images/icon.png'
 
 export function Register() {
 
@@ -103,7 +102,7 @@ export function Register() {
 
     return (
           <section >
-            <h2 class="small-title mb-4">Dead Ringer <img src={icon}></img></h2>
+            <h2 class="small-title">Dead Ringer</h2>
                 <form onSubmit={doRegister}>
                     <div className="side-by-side">
                         <input type="text" id="firstName" placeholder="First Name" className="mb-3" ref={(c) => firstName = c}/>
@@ -119,17 +118,20 @@ export function Register() {
 
                     <button className="mt-3" onSubmit={doRegister}>Sign Up</button>
                 </form>
+                    
+                <p>
                     <span className="link text-center">
                         <Link to="/" variant = "body2">
-                        <span style={{color :"white", fontSize: 15}}>
+                        <span style={{color :"black", fontSize: 15}}>
                              Already have an account?
                         </span>
                        
-                        <span span style={{color :'white', fontSize: 15}}>
-                            &nbsp;Sign in
+                        <span span style={{color :'#4e4187', fontSize: 15}}>
+                            &nbsp; Sign in
                          </span>
                         </Link>
                     </span>
+                </p>
                      
                 </section>
     )}

@@ -63,7 +63,7 @@ const SwitchesComponent = () => {
                 <tr>
                   <th className="smaller-title">Name</th>
                   <th className="smaller-title">Contact</th>
-                  <th className="smaller-title">Msg</th>
+                  <th className="smaller-title">Message</th>
                   <th className="smaller-title">Timer</th>
                   <th className="smaller-title">Actions</th>
                 </tr>
@@ -103,6 +103,11 @@ const SwitchesComponent = () => {
           <Modal.Body>
             <AddForm />
           </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close Button
+            </Button>
+          </Modal.Footer>
         </Modal>
       </div>
     </>
