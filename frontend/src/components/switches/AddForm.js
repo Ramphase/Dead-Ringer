@@ -26,7 +26,7 @@ const AddForm = () => {
       triggerName: name,
       messageName: msgId,
       contactId: contactId,
-      time: timer,
+      time: timer * 60,
       jwtToken: userToken,
     };
     var js = JSON.stringify(obj);
