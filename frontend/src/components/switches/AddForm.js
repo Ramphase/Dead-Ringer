@@ -76,7 +76,7 @@ const AddForm = () => {
     }
     const id = await doTrigger(e);
     console.log(timer);
-    addSwitch(id, name, contactId, msgId, timer);
+    addSwitch(id, name, contactId, msgId, timer * 60);
   };
 
   return (
