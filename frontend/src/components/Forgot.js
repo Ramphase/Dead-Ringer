@@ -17,6 +17,11 @@ export function Forgot(){
             login: login.value,
             email: email.value
         };
+        if(obj.password !== obj.confirmPassword)
+        {
+            setMessage('Passwords do not match');
+            return;
+        }
         var js = JSON.stringify(obj);
         var config = 
         {
@@ -46,9 +51,9 @@ export function Forgot(){
             <h2 class="small-title">Forgot Password</h2>
 
             <form onSubmit={doForgot}>
-                <input type="text" id="login" placeholder="Enter Login" ref={(c) => login = c} className="mb-3"/>  
-                <input type="email" id="email" placeholder="Enter Email" ref={(c) => email = c} className="mb-3 mt-4"/>
-                <button className="mt-4 mb-3" onSubmit={doForgot}>Submit</button>
+                <input type="text" id="login" placeholder="Enter Login" ref={(c) => login = c} className="mb-3 mt-4"/>  
+                <input type="email" id="email" placeholder="Enter Email" ref={(c) => email = c} className="mb-3"/>
+                <button className="mb-3" onSubmit={doForgot}>Submit</button>
                 <span id="forgotResult" style={{color :'white'}}>{message}</span>
             </form>
                 <span className="link text-center">

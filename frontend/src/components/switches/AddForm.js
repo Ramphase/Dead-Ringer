@@ -86,6 +86,7 @@ const AddForm = () => {
           type="text"
           placeholder="Name"
           name="name"
+          className="mb-2"
           value={newSwitch.name}
           onChange={onInputChange}
           required

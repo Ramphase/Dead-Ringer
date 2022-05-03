@@ -101,11 +101,6 @@ const MySwitch = ({ Switch }) => {
         <Modal.Body>
           <EditForm theSwitch={Switch} />
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close Button
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

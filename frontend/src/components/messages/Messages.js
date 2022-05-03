@@ -43,7 +43,7 @@ const Messages = () => {
   const totalPagesNum = Math.ceil(sortedMessages.length / messagesPerPage);
 
   return (
-    <div className="innerbox">
+    <div className="wrapper innerbox">
       <div className="bg table-title">
         <h1>Dead Ringer | Messages</h1>
         <p>

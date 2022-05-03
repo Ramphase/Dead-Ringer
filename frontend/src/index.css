@@ -283,10 +283,19 @@ Modal-Title {
 	font-weight: normal;
 }	
 
+.wrapper{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .innerbox
 {
-   width:80vw; /* or whatever width you want. */
-   max-width:80vw; /* or whatever width you want. */
+  height: 550px;
+  width: 1440px;
+   justify-content: center;
+   align-items: center;
    display: inline-block;
 }
 
