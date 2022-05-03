@@ -1,6 +1,7 @@
 import React,{ useState } from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
+import icon from './images/icon.png'
 
 export function Register() {
 
