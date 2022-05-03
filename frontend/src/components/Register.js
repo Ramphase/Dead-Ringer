@@ -102,7 +102,7 @@ export function Register() {
 
     return (
           <section >
-            <h2 class="small-title">Dead Ringer</h2>
+            <h2 class="small-title">Dead Ringer <img src={icon}></img></h2>
                 <form onSubmit={doRegister}>
                     <div className="side-by-side">
                         <input type="text" id="firstName" placeholder="First Name" className="mb-3" ref={(c) => firstName = c}/>
