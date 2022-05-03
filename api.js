@@ -473,7 +473,7 @@ exports.setApp = function ( app, client )
       return;
     }
 
-    const newTrigger = {UserId:userId, TriggerName: triggerName, Message: msgResults[0].MessageName, Contact: contactId, Time: time};
+    const newTrigger = {UserId:userId, TriggerName: triggerName, Message: msgResults[0].Text, Contact: contactId, Time: time};
 
     try
     {
