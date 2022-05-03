@@ -1092,6 +1092,17 @@ exports.setApp = function ( app, client )
         return;
       }
 
+      //Get text of message
+      const messageResult = await Messages.find({UserId: userId, MessageName: triggerResult[0].Message})
+
+      if (messageResult.length == 0)
+      {
+        error = "This message does not exist";
+        var ret = { error: error };
+        res.status(200).json(ret);
+        return;
+      }
+
       //Grabs FirstName of User
       const userResult = await Users.find({UserId: userId});
 
@@ -1109,9 +1120,9 @@ exports.setApp = function ( app, client )
       }
       contactId = String(contactId).split(',')
       
-      const message = triggerResult[0].Message;
+      const message = messageResult[0].Text;
       const User_Name = userResult[0].FirstName;
-  
+      console.log(message);
       try
       {
         if( token.isExpired(jwtToken))
