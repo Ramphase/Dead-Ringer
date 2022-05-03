@@ -65,7 +65,7 @@ const EditForm = ({ theContact }) => {
           placeholder="First name"
           name="firstName"
           value={firstName}
-          className="mb-2"
+          className="mb-2 mt-1"
           onChange={(e) => setFirstName(e.target.value)}
           required
         />
@@ -76,7 +76,7 @@ const EditForm = ({ theContact }) => {
           placeholder="Last name"
           name="lastName"
           value={lastName}
-          className="mb-2 mt-1"
+          className="mb-2"
           onChange={(e) => setLastName(e.target.value)}
           required
         />

@@ -118,20 +118,25 @@ export function Register() {
 
                     <button className="mt-3" onSubmit={doRegister}>Sign Up</button>
                 </form>
-                    
-                <p>
                     <span className="link text-center">
                         <Link to="/" variant = "body2">
-                        <span style={{color :"black", fontSize: 15}}>
+                        <span style={{color :"white", fontSize: 15}}>
                              Already have an account?
                         </span>
                        
-                        <span span style={{color :'#4e4187', fontSize: 15}}>
-                            &nbsp; Sign in
+                        <span span style={{color :'white', fontSize: 15}}>
+                            &nbsp;Sign in
                          </span>
                         </Link>
                     </span>
-                </p>
+
+                    <span className="link text-center">
+                    <Link to="/Forgot" variant ="body2">
+                    <span span style={{color :'white', fontSize: 15}}>
+                        Forgot Password?
+                    </span>
+                        </Link>
+                </span>
                      
                 </section>
     )}
