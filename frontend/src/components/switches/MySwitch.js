@@ -65,7 +65,7 @@ const MySwitch = ({ Switch }) => {
         <Countdown
           date={
             startDate.current +
-            Duration.fromMillis(parseInt(Switch.timer) * 60000)
+            Duration.fromMillis(parseInt(Switch.timer) * 1000)
           }
           daysInHours={true}
         />
