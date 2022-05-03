@@ -63,7 +63,7 @@ export function Login(){
             <form onSubmit={doLogin}>
                 <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} className="mb-3 mt-4"/> 
                 <input type="password" id="password" placeholder="Password" ref={(c) => loginPassword = c} />
-                <span id="loginResult">{message}</span>
+                <span id="loginResult" style={{color :'white'}}>{message}</span>
 
                 <button className="mt-3" onSubmit={doLogin}>Sign In</button>
             </form>
